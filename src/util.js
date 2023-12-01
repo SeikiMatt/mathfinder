@@ -1,6 +1,9 @@
 "use strict";
 
 class Util {
+    static $(selector) {
+        return [...document.querySelectorAll(selector)];
+    }
     static walkObject(obj, parents) {
         for (const [key, value] of Object.entries(obj)) {
             if (typeof value === 'object' && value !== null && !Array.isArray(value))
