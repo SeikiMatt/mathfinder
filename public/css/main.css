@@ -1,0 +1,232 @@
+* {
+    box-sizing: border-box;
+    font-size: 16px;
+}
+
+h2 {
+    font-size: 1.33rem;
+    padding: 0.25rem 0;
+    margin-bottom: 0.75rem;
+    background-color: #dddddd;
+}
+
+.text-h1 {
+    font-size: 1.66rem;
+}
+
+.text-h2 {
+    font-size: 1.33rem;
+}
+
+hr {
+    border: 0;
+    border-bottom: 1px solid #ddd;
+    margin: 1rem 0;
+}
+
+input {
+    width: 100%;
+    height: 28px;
+    display: block;
+}
+
+input[type='checkbox'] {
+    margin: 4px 0;
+    height: 20px;
+    width: 20px;
+}
+
+.checkbox-spacer {
+    width: 20px;
+}
+
+main {
+    padding: 0.5rem;
+}
+
+.main-container {
+    width: 100vw;
+    height: 100vh;
+}
+
+.navbar {
+    position: fixed;
+    bottom: 0;
+    height: 3rem;
+    background: white;
+    border-top: 1px solid #ddd;
+}
+
+.navbar button {
+    background: transparent;
+    border: none;
+}
+
+.navbar button:hover {
+    cursor: pointer;
+    background: rgba(0, 0, 0, 0.5)
+}
+
+fieldset {
+    margin-bottom: 0.5rem;
+}
+
+label {
+    display: block;
+    padding-top: 2px;
+}
+
+label.top {
+    padding: 0;
+    padding-bottom: 2px;
+}
+
+table td {
+    padding: 0.25rem 0.25rem;
+}
+
+.form-field {
+    padding: 0 0.25rem;
+}
+
+table {
+    table-layout: fixed;
+}
+
+table * {
+    vertical-align: top;
+}
+
+.table-connector {
+    width: 1rem;
+    padding: 0.33rem 0;
+    font-size: 1.5rem
+}
+
+.text-primary {
+    font-size: 16px;
+    line-height: 16px;
+}
+
+.text-secondary {
+    font-size: 12px;
+    line-height: 12px;
+}
+
+.cell-hor {
+    padding: 0.5rem 0.25rem;
+}
+
+.cell-ver {
+    padding: 0.5rem 0.25rem;
+}
+
+.tablecell-shrink {
+    width: 0.1%;
+    white-space: nowrap;
+}
+
+.inline-header {
+    width: 0.1%;
+    white-space: nowrap;
+    height: 36px;
+}
+
+.field-number {
+    display: block;
+    margin: 0 auto;
+    width: 44px;
+    text-align: center;
+}
+
+.health-container {
+    position: relative;
+}
+
+.field-health {
+    font-size: 32px;
+    height: 72px;
+    width: 100%;
+    padding: 0.75rem 0.5rem 1.75rem 0.5rem;
+}
+
+.field-health + .label {
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+    padding: 0.25rem 0.5rem;
+}
+
+.p-1 {
+    padding: 0.25rem;
+}
+
+.table-skills tbody tr {
+    height: 36px;
+}
+
+.bg-gray {
+    background-color: #dddddd;
+}
+
+.modal-background {
+    display: none;
+    z-index: 10;
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5)
+}
+
+.modal {
+    z-index: 20;
+    top: 0;
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+}
+
+.modal-topbar {
+    background: #fff;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.modal-topbar > * {
+    padding: 0.75rem;
+}
+
+.modal-closebutton {
+    cursor: pointer;
+}
+
+.modal-body {
+    background: #fff;
+    position: relative;
+    width: 100%;
+    padding: 0.75rem;
+}
+
+.modal-background.active {
+    display: initial;
+}
+
+.modal.active {
+    display: flex;
+}
+
+.button {
+    width: 100%;
+    height: 28px;
+    padding: 0.2rem;
+    cursor: pointer;
+    border-radius: 2px;
+    border: 1px solid #8f8f9d;
+}

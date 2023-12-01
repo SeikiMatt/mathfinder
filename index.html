@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="public/css/reset.css">
+    <link rel="stylesheet" href="public/css/main.css">
+    <link rel="stylesheet" href="public/css/layout.css">
+</head>
+<body>
+<main class="main-container">
+    <template id="--page:bio" class="--page --component-insertion"></template>
+    <template id="--page:stats" class="--page --component-insertion"></template>
+    <template id="--page:gear" class="--page --component-insertion"></template>
+    <template id="--page:spells" class="--page --component-insertion"></template>
+    <template id="--page:abilities" class="--page --component-insertion"></template>
+    <template id="--page:skills" class="--page --component-insertion"></template>
+    <template id="--page:inventory" class="--page --component-insertion"></template>
+</main>
+<nav class="navbar flex">
+        <button id="--link:bio" class="--link flex-grow"><img src="public/img/pathfinderhelper-gear.png" width="32"/></button>
+        <button id="--link:stats" class="--link flex-grow"><img src="public/img/pathfinderhelper-gear.png" width="32"/></button>
+        <button id="--link:gear" class="--link flex-grow"><img src="public/img/pathfinderhelper-gear.png" width="32"/></button>
+        <button id="--link:spells" class="--link flex-grow"><img src="public/img/pathfinderhelper-gear.png" width="32"/></button>
+        <button id="--link:abilities" class="--link flex-grow"><img src="public/img/pathfinderhelper-gear.png" width="32"/>
+        </button>
+        <button id="--link:skills" class="--link flex-grow"><img src="public/img/pathfinderhelper-gear.png" width="32"/></button>
+        <button id="--link:inventory" class="--link flex-grow"><img src="public/img/pathfinderhelper-gear.png" width="32"/>
+        </button>
+</nav>
+<section id="--modal:bio-size" class="--modal modal">
+    <div class="modal-topbar">
+        <div>Size</div>
+        <div id="--modal-closebutton:bio-size" class="--modal-closebutton modal-closebutton">X</div>
+    </div>
+    <div class="modal-body">
+        <label for="--field:bio-size-name" class="top">Size Name</label>
+        <input id="--field:bio-size-name" class="--field">
+        <hr>
+        <div class="flex flex-col gap-4">
+            <div class="health-container flex-shrink">
+                <input id="--field:bio-size-modifier" class="--field field-health text-center">
+                <div class="label text-secondary text-center">Size Modifier</div>
+            </div>
+            <button class="button">Done</button>
+        </div>
+    </div>
+</section>
+<section id="--modal:stats-armorclass" class="--modal modal">
+    <div class="modal-topbar">
+        <div>Armor Class</div>
+        <div id="--modal-closebutton:stats-armorclass" class="--modal-closebutton modal-closebutton">X</div>
+    </div>
+    <div class="modal-body">
+        <table class="table-abilities w-100 table-ability-scores text-center">
+            <thead>
+            <tr class="text-secondary">
+                <td>
+                    Base
+                </td>
+                <td>
+                    Items
+                </td>
+                <td>
+                    DEX
+                </td>
+                <td>
+                    Size
+                </td>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>
+                    <input id="--field:stats-armorclass-base" class="--field field-number">
+                </td>
+                <td>
+                    <input id="--field:stats-armorclass-items" class="--field field-number">
+                </td>
+                <td>
+                    <input id="--field:stats-armorclass-dex" class="--field field-number">
+                </td>
+                <td>
+                    <input id="--field:stats-armorclass-size" class="--field field-number">
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <hr>
+        <table class="table-abilities w-100 table-ability-scores text-center">
+            <thead>
+            <tr class="text-secondary">
+                <td>
+                    Natural
+                </td>
+                <td>
+                    Deflection
+                </td>
+                <td>
+                    Miscellaneous
+                </td>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>
+                    <input id="--field:stats-armorclass-natural" class="--field field-number">
+                </td>
+                <td>
+                    <input id="--field:stats-armorclass-deflection" class="--field field-number">
+                </td>
+                <td>
+                    <input id="--field:stats-armorclass-misc" class="--field field-number">
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <hr>
+        <div class="flex flex-col gap-4">
+            <div class="health-container flex-shrink">
+                <input class="field-health text-center">
+                <div class="label text-secondary text-center">Final Armor Class</div>
+            </div>
+            <button class="button">Enter</button>
+        </div>
+    </div>
+</section>
+</body>
+<script src="src/util.js" defer></script>
+<script src="src/nav.js" defer></script>
+<script src="src/modal.js" defer></script>
+<script src="src/model.js" defer></script>
+<script src="src/main.js" defer></script>
+</html>
