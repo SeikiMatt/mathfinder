@@ -6,8 +6,7 @@ class Modals {
     #activeModal = "";
 
     constructor(modalElements, modalOpenButtonElements) {
-        this.#modalMapping = modalElements
-            .reduce((agg, element) => ({...agg, [element.id.split(":")[1]]: element}), {});
+        this.#modalMapping = Util.nodeArrayToObject(modalElements)
         this.#modalOpenButtonElements = modalOpenButtonElements;
         this.#activeModal = "bio-size";
     };

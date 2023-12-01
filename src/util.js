@@ -4,6 +4,10 @@ class Util {
     static $(selector) {
         return [...document.querySelectorAll(selector)];
     }
+
+    static nodeArrayToObject(nodeArray) {
+        return nodeArray.reduce((agg, element) => ({...agg, [element.id.split(":")[1]]: element}), {});
+    }
     static walkObject(obj, parents) {
         for (const [key, value] of Object.entries(obj)) {
             if (typeof value === 'object' && value !== null && !Array.isArray(value))
