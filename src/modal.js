@@ -5,10 +5,10 @@ class Modals {
     #modalOpenButtonElements = [];
     #activeModal = "";
 
-    constructor(modalElements, modalOpenButtonElements) {
+    constructor(modalElements, modalOpenButtonElements, activeModal) {
         this.#modalMapping = Util.nodeArrayToObject(modalElements)
         this.#modalOpenButtonElements = modalOpenButtonElements;
-        this.#activeModal = "bio-size";
+        this.#activeModal = activeModal;
     };
 
     get modalMapping() {

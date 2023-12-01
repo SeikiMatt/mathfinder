@@ -37,7 +37,8 @@ Promise.all(componentHTML).then(componentPromises => {
     const navigation = new Nav("gear")
     const modals = new Modals(
         Util.$(".--modal"),
-        Util.$(".--modal-open")
+        Util.$(".--modal-open"),
+        "bio-size"
     )
 
     function initializeNavEvents() {
