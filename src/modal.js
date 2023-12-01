@@ -2,13 +2,13 @@
 
 class Modals {
     #modalMapping = {};
-    #modalOpenButtonMapping = [];
+    #modalOpenButtonElements = [];
     #activeModal = "";
 
-    constructor() {
-        this.#modalMapping = [...document.getElementsByClassName("--modal")]
+    constructor(modalElements, modalOpenButtonElements) {
+        this.#modalMapping = modalElements
             .reduce((agg, element) => ({...agg, [element.id.split(":")[1]]: element}), {});
-        this.#modalOpenButtonMapping = [...document.getElementsByClassName("--modal-open")];
+        this.#modalOpenButtonElements = modalOpenButtonElements;
         this.#activeModal = "bio-size";
     };
 
@@ -16,8 +16,8 @@ class Modals {
         return this.#modalMapping;
     }
 
-    get modalOpenButtonMapping() {
-        return [...this.#modalOpenButtonMapping];
+    get modalOpenButtonElements() {
+        return [...this.#modalOpenButtonElements];
     }
 
     get activeModal() {

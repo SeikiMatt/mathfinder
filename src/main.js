@@ -35,7 +35,10 @@ Promise.all(componentHTML).then(componentPromises => {
         replaceElement(elementsToReplace[i], templates[i])
 
     const navigation = new Nav("gear")
-    const modals = new Modals()
+    const modals = new Modals(
+        Util.$(".--modal"),
+        Util.$(".--modal-open")
+    )
 
     function initializeNavEvents() {
         navigation.linkMapping.forEach(element => {
@@ -44,7 +47,7 @@ Promise.all(componentHTML).then(componentPromises => {
     }
 
     function initializeModalEvents() {
-        modals.modalOpenButtonMapping.forEach(element => {
+        modals.modalOpenButtonElements.forEach(element => {
             element.addEventListener("click", _ => {
                 modals.activateModal(element.id.split(":")[1])
                 navigation.disableAllPages()
