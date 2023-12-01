@@ -24,7 +24,9 @@ class Modals {
     }
 
     activateModal(id) {
-        this.#modalMapping[this.#activeModal].classList.remove("active")
+        if(this.#activeModal)
+            this.#modalMapping[this.#activeModal].classList.remove("active")
+
         this.#modalMapping[id].classList.add("active")
 
         this.#activeModal = id;

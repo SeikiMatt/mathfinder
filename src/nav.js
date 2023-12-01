@@ -5,12 +5,9 @@ class Nav {
     #linkMapping = {};
     #activePage = "";
 
-    constructor(activePage) {
-        this.#pageMapping = [...document.getElementsByClassName("--page")]
-            .reduce((agg, element) => ({ ...agg, [element.id.split(":")[1]]: element}), {});
-
-        this.#linkMapping = [...document.getElementsByClassName("--link")];
-
+    constructor(pageElements, linkElements, activePage) {
+        this.#pageMapping = Util.nodeArrayToObject(pageElements);
+        this.#linkMapping = linkElements;
         this.#activePage = activePage;
     }
 

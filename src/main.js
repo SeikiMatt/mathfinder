@@ -1,7 +1,6 @@
 "use strict";
 
 
-
 function templateFromHTML(html, trim = true) {
     // https://stackoverflow.com/questions/494143/creating-a-new-dom-element-from-an-html-string-using-built-in-dom-methods-or-pro/35385518#35385518
     html = trim ? html : html.trim();
@@ -29,16 +28,20 @@ const componentHTML = elementsToReplace.map(
 
 Promise.all(componentHTML).then(componentPromises => {
     const templates = componentPromises.map(entry => templateFromHTML(entry))
-
     // As far as I can tell this order is guaranteed by the document order of elementsToReplace
     for (let i = 0; i < templates.length; i++)
         replaceElement(elementsToReplace[i], templates[i])
 
-    const navigation = new Nav("gear")
+    const navigation = new Nav(
+        Util.$(".--page"),
+        Util.$(".--link"),
+        "gear"
+    )
+
     const modals = new Modals(
         Util.$(".--modal"),
         Util.$(".--modal-open"),
-        "bio-size"
+        ""
     )
 
     function initializeNavEvents() {
