@@ -24,16 +24,20 @@ class Modals {
     }
 
     activateModal(id) {
-        if(this.#activeModal)
+        if(this.#activeModal) {
             this.#modalMapping[this.#activeModal].classList.remove("active")
+            this.#modalMapping[this.#activeModal].setAttribute("disabled", "disabled");
+        }
 
         this.#modalMapping[id].classList.add("active")
+        this.#modalMapping[id].removeAttribute("disabled");
 
         this.#activeModal = id;
     }
 
     deactivateModal() {
         this.#modalMapping[this.#activeModal].classList.remove("active")
+        this.#modalMapping[this.#activeModal].setAttribute("disabled", "disabled");
     }
 }
 
