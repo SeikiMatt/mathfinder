@@ -44,6 +44,31 @@ class Model {
     }
 }
 
+class ModelBoolean {
+    #value = false;
+
+    constructor(value) {
+        value = value ?? false;
+        ModelBoolean.validate(value)
+        this.#value = value;
+    }
+
+    get value() {
+        return this.#value
+    }
+
+    set value(newValue) {
+        ModelBoolean.validate(newValue)
+
+        this.#value = newValue
+    }
+
+    static validate(value) {
+        if (typeof value !== "boolean")
+            throw new Error(`The only valid type for this property is "boolean".`)
+    }
+}
+
 class ModelString {
     #value = "";
 
