@@ -155,7 +155,7 @@ class ModelModifier {
         if (typeof value !== "string")
             throw new Error(`The only valid type for this property is "string".`)
 
-        if (!value.match(/^(\+|\-){1}\d+/))
+        if (!value.match(/^([+-])\d+(?!.+)/))
             throw new Error(`Value should be in sign-integer format, e.g. "+5" or "-2".`)
     }
 }
