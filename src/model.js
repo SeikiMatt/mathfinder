@@ -136,9 +136,37 @@ class ModelModifier {
         return this.#value
     }
 
-    get numericalValue() {
-        const number = Number(this.#value.slice(1));
-        return this.#value[0] === "+" ? Math.abs(number) : -Math.abs(number)
+    static modifierToNumber(value) {
+        ModelModifier.validate(value)
+        const number = Number(value.slice(1));
+        return value[0] === "+" ? Math.abs(number) : -Math.abs(number)
+    }
+
+    static integerToModifier(value) {
+        if(typeof value !== "number")
+            throw TypeError("Argument must be of type number.")
+
+        if(!Number.isInteger(value))
+            throw TypeError("Argument must be an integer.")
+
+        if (!value)
+            return "0"
+
+        return value === 0 ? "0" : value > 0 ? "+" + value : "" + value
+    }
+
+    static scoreToModifier(score) {
+        if(typeof score !== "number")
+            throw TypeError("Argument must be of type number.")
+
+        if(!Number.isInteger(score))
+            throw TypeError("Argument must be an integer.")
+
+        if (!score)
+            return "0"
+
+        const modifier = Math.floor((score - 10) / 2)
+        return ModelModifier.integerToModifier(modifier);
     }
 
     set value(newValue) {
