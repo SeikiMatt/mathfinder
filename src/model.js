@@ -39,6 +39,11 @@ class Model {
                 Object.preventExtensions(obj)
             }
             // console.log(parents.join(".") + "." + key + ": ", value)
+
+            Object.defineProperty(obj, key, {
+                writable: false
+            })
+            Object.preventExtensions(obj)
             this.initialise(value, [...parents, key])
         }
     }
