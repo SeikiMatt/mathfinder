@@ -46,7 +46,7 @@ function initializeApp() {
             const field = Util.traverseObjectKeys(modelCharacterSheet.data, path);
 
             if (field.isReference)
-                field.initialize(modelCharacterSheet.data)
+                field.initialize(modelCharacterSheet)
 
             e.value = field.value;
 

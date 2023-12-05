@@ -53,7 +53,6 @@ class ModelBoolean {
     #value = false;
 
     constructor(value) {
-        value = value ?? false;
         ModelBoolean.validate(value)
         this.#value = value;
     }
@@ -64,7 +63,6 @@ class ModelBoolean {
 
     set value(newValue) {
         ModelBoolean.validate(newValue)
-
         this.#value = newValue
     }
 
@@ -78,7 +76,7 @@ class ModelString {
     #value = "";
 
     constructor(value) {
-        value = value ?? "";
+        value = value ?? ""
         ModelString.validate(value)
         this.#value = value;
     }
@@ -89,13 +87,12 @@ class ModelString {
 
     set value(newValue) {
         ModelString.validate(newValue)
-
         this.#value = newValue
     }
 
     static validate(value) {
         if (typeof value !== "string")
-            throw new Error(`The only valid type for this property is "string".`)
+            throw TypeError(`The only valid type for this property is "string".`)
     }
 }
 
@@ -103,7 +100,7 @@ class ModelInteger {
     #value = 0;
 
     constructor(value) {
-        value = value ?? 0;
+        value = value ?? 0
         ModelInteger.validate(value)
         this.#value = value;
     }
@@ -166,33 +163,70 @@ class ModelModifier {
 }
 
 class ModelReference {
-    #path = ""
-    #parentObject = {}
-    #reference = {}
+    #path = [""];
+    #parentObject = {};
+    #ref = {} || [{}];
 
     constructor(path) {
-        this.#path = path;
+        ModelReference.validate(path)
+        this.#path = typeof path === "string" ? [path] : path;
     }
 
-    setParent(obj) {
-        this.#parentObject = obj;
+    get(index) {
+        const references = this.#path.map(str =>
+            Util.traverseObjectKeys(this.#parentObject, str.split("."))
+        );
+
+        if(index < 0 || index > references.length - 1)
+            throw TypeError("Index is out of range.")
+
+        this.#ref = references;
+
+        return this.#ref.length === 1 ? this.#ref[0] : this.#ref[index]
+    }
+
+    getAll() {
+        return this.#path.map(str =>
+            Util.traverseObjectKeys(this.#parentObject, str.split("."))
+        );
+    }
+
+    get length() {
+        return this.#ref.length;
     }
 
     get isReference() {
         return true;
     }
 
-    get reference() {
-        return this.#reference
-    }
-
-    get value() {
-        return this.#reference.value
-    }
-
     initialize(obj) {
-        this.#parentObject = obj
-        this.#reference = Util.traverseObjectKeys(this.#parentObject, this.#path.split("."))
+        this.#parentObject = obj.data;
+    }
+
+    static validate(entry) {
+        const pattern = /^[a-zA-Z]+(\.[a-zA-Z]+)*(?!.+)/;
+
+        if (!Array.isArray(entry) && typeof entry !== "string")
+            throw TypeError(`Path expected type "string" or "string[]", but got "${typeof entry}".`);
+
+        if (entry.length === 0)
+            throw TypeError("Path string or array can not be empty.");
+
+        if (Array.isArray(entry)) {
+            if (!entry.every(e => typeof e === "string"))
+                throw TypeError(`All strings in path array must be of type "string".`);
+
+            if (entry.every(e => e.length === 0))
+                throw TypeError(`All strings in path array must not be empty`);
+
+            if (!entry.every(e => e.match(pattern)))
+                throw TypeError(`Path in array does not match "property.dot.notation" format.`);
+        }
+
+        if (typeof entry === "string") {
+            if (!entry.match(pattern))
+                throw TypeError(`Path does not match "property.dot.notation" format.`);
+        }
     }
 }
 
