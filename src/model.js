@@ -17,11 +17,23 @@ class Model {
         return this.#data
     }
 
-    static isModelType(classInstance) {
+    static get modelTypes() {
+        return [
+            ModelString,
+            ModelBoolean,
+            ModelInteger,
+            ModelStat,
+            ModelReference,
+            ModelList
+        ]
+    }
+
+    static isModelTypeInstance(classInstance) {
         const ModelTypes = [
             ModelString,
+            ModelBoolean,
             ModelInteger,
-            ModelModifier,
+            ModelStat,
             ModelReference,
             ModelList
         ]
@@ -34,7 +46,7 @@ class Model {
             if (!Util.isObject(value))
                 throw TypeError("Leaf node \"" + key + "\" of model is not a POJO or Model Type.");
 
-            if (!Model.isModelType(value)) {
+            if (!Model.isModelTypeInstance(value)) {
                 Object.defineProperty(obj, key, {writable: false})
                 Object.preventExtensions(obj)
             }
@@ -98,23 +110,24 @@ class ModelString {
 
 class ModelInteger {
     #value = 0;
+    #integer = 0;
 
     constructor(value) {
-        value = value ?? 0
-        ModelInteger.validate(value)
-        this.#value = value;
+        value = value ?? 0;
+        ModelInteger.validateInteger(value)
+        this.#integer = value
     }
 
     get value() {
-        return this.#value
+        return this.#integer
     }
 
-    set value(newValue) {
-        ModelInteger.validate(newValue)
-        this.#value = newValue
+    set value(value) {
+        ModelInteger.validateInteger(value)
+        this.#integer = value
     }
 
-    static validate(value) {
+    static validateInteger(value) {
         if (typeof value !== "number")
             throw new Error(`The only valid type for this property is "number".`)
 
@@ -123,65 +136,79 @@ class ModelInteger {
     }
 }
 
-class ModelModifier {
-    #value = "";
+class ModelStat {
+    #score = 0;
+    #modifier = "+0"
 
     constructor(value) {
-        value = value ?? "+0"
-        ModelModifier.validate(value)
-        this.#value = value;
+        switch(typeof value) {
+            case "string":
+                ModelStat.validateModifier(value)
+                this.#modifier = value;
+                this.#score = ModelStat.modifierToScore(value)
+                break
+            case "number":
+                ModelStat.validateInteger(value)
+                this.#score = value
+                this.#modifier = ModelStat.scoreToModifier(value)
+        }
     }
 
-    get value() {
-        return this.#value
+    get score() {
+        return this.#score
     }
 
-    static modifierToNumber(value) {
-        ModelModifier.validate(value)
-        const number = Number(value.slice(1));
-        return value[0] === "+" ? Math.abs(number) : -Math.abs(number)
+    set score(value) {
+        ModelStat.validateInteger(value)
+        this.#score = value
+        this.#modifier = ModelStat.scoreToModifier(value)
     }
 
-    static integerToModifier(value) {
-        if(typeof value !== "number")
-            throw TypeError("Argument must be of type number.")
-
-        if(!Number.isInteger(value))
-            throw TypeError("Argument must be an integer.")
-
-        if (!value)
-            return "0"
-
-        return value === 0 ? "0" : value > 0 ? "+" + value : "" + value
+    get modifier() {
+        return this.#modifier
     }
 
-    static scoreToModifier(score) {
-        if(typeof score !== "number")
-            throw TypeError("Argument must be of type number.")
-
-        if(!Number.isInteger(score))
-            throw TypeError("Argument must be an integer.")
-
-        if (!score)
-            return "0"
-
-        const modifier = Math.floor((score - 10) / 2)
-        return ModelModifier.integerToModifier(modifier);
+    set modifier(value) {
+        ModelStat.validateModifier(value)
+        this.#modifier = value;
+        this.#score = ModelStat.modifierToScore(value)
     }
 
-    set value(newValue) {
-        ModelModifier.validate(newValue)
-        this.#value = newValue
-    }
-
-    static formatModifier(integer) {
-        if (!integer)
-            return "0"
+    static integerToModifier(integer) {
+        ModelStat.validateInteger(integer)
 
         return integer === 0 ? "0" : integer > 0 ? "+" + integer : "" + integer
     }
 
-    static validate(value) {
+    static scoreToModifier(score) {
+        ModelStat.validateInteger(score)
+
+        const modifier = Math.floor((score - 10) / 2)
+        return ModelStat.integerToModifier(modifier);
+    }
+
+    static modifierToScore(modifier) {
+        ModelStat.validateModifier(modifier)
+
+        return ModelStat.modifierToNumber(modifier) * 2 + 10;
+    }
+
+    static modifierToNumber(modifier) {
+        ModelStat.validateModifier(modifier)
+
+        const number = Number(modifier.slice(1));
+        return modifier[0] === "+" ? Math.abs(number) : -Math.abs(number)
+    }
+
+    static validateInteger(value) {
+        if (typeof value !== "number")
+            throw new Error(`The only valid type for this property is "number".`)
+
+        if (!Number.isInteger(value))
+            throw new Error(`Number is not an integer.`)
+    }
+
+    static validateModifier(value) {
         if (typeof value !== "string")
             throw new Error(`The only valid type for this property is "string".`)
 
