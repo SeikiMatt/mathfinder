@@ -287,10 +287,12 @@ class ModelReference {
 class ModelList {
     #list = [];
     #type = {};
+    #options = {};
 
     constructor(declaration) {
         this.#list = declaration.list;
         this.#type = declaration.type;
+        this.#options = declaration.options;
         this.validateType(this.#type);
         this.#list.forEach(obj => this.validate(obj, this.#type));
     }
@@ -318,11 +320,17 @@ class ModelList {
     }
 
     add(value) {
+        if(this.isReadonly)
+            return
+
         this.validate(value, this.#type);
         this.#list = [...this.#list, value];
     }
 
     set(value, index) {
+        if(this.isReadonly)
+            return
+
         if (this.#list.length === 0)
             throw new Error(
                 `List is empty.`
@@ -344,6 +352,10 @@ class ModelList {
 
     get size() {
         return this.#list.length;
+    }
+
+    get isReadonly() {
+        return 'readonly' in this.#options && this.#options.readonly === true
     }
 
     validate(obj, type, parents = []) {
