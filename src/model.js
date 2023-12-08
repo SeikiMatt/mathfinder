@@ -109,7 +109,6 @@ class ModelString {
 }
 
 class ModelInteger {
-    #value = 0;
     #integer = 0;
 
     constructor(value) {
@@ -141,7 +140,7 @@ class ModelStat {
     #modifier = "+0"
 
     constructor(value) {
-        switch(typeof value) {
+        switch (typeof value) {
             case "string":
                 ModelStat.validateModifier(value)
                 this.#modifier = value;
@@ -232,7 +231,7 @@ class ModelReference {
             Util.traverseObjectKeys(this.#parentObject, str.split("."))
         );
 
-        if(index < 0 || index > references.length - 1)
+        if (index < 0 || index > references.length - 1)
             throw TypeError("Index is out of range.")
 
         this.#ref = references;
@@ -292,8 +291,8 @@ class ModelList {
     constructor(declaration) {
         this.#list = declaration.list;
         this.#type = declaration.type;
-        this.validateType(this.#type, "");
-        this.#list.forEach(obj => this.validate(obj, this.#type, ""));
+        this.validateType(this.#type);
+        this.#list.forEach(obj => this.validate(obj, this.#type));
     }
 
     get(index) {
@@ -319,7 +318,7 @@ class ModelList {
     }
 
     add(value) {
-        this.validate(value, this.#type, "");
+        this.validate(value, this.#type);
         this.#list = [...this.#list, value];
     }
 
@@ -347,38 +346,64 @@ class ModelList {
         return this.#list.length;
     }
 
-    validate(obj, type, parents) {
-        if(obj === undefined)
-            throw TypeError("ModelList entry is undefined.");
+    validate(obj, type, parents = []) {
+        if (obj === undefined)
+            throw TypeError("Object is undefined.")
 
-        if(type === undefined)
-            throw TypeError("ModelList type is undefined.");
+        if (type === undefined)
+            throw TypeError("Type is undefined.")
+
+        if (!Util.isObject(obj))
+            throw TypeError("Expected type Object.")
+
+        if (parents.length === 0 && Model.modelTypes.some(e => type === e))
+            if (obj instanceof type)
+                return
+            else
+                throw TypeError("Root level Object does not match Type.")
+
+        if (Object.keys(obj).length === 0 && !Model.isModelTypeInstance(obj))
+            throw TypeError("Object contains no keys.")
 
         if (Object.keys(obj).length !== Object.keys(type).length)
-            throw TypeError("ModelList entry does not match number of properties in its Type.");
+            throw TypeError("Number of properties don't match between Object and Type.")
 
-        for (const [key, value] of Object.entries(obj)) {
-            if(!Object.hasOwn(type, key))
-                throw TypeError("Key \"" + key + "\" does not exist in declared Type.");
+        if (!Util.isObject(obj) &&
+            !Model.isModelTypeInstance(obj) &&
+            !Model.modelTypes.some(e => obj === e
+            ))
+            throw TypeError("Property is not a POJO or Model Type.");
 
-            if (!Util.isObject(value) && !Model.isModelType(value))
-                throw TypeError("Leaf node \"" + key + "\" of model is not a POJO or Model Type.");
+        for (const [key, objValue] of Object.entries(obj)) {
+            if (!Object.hasOwn(type, key))
+                throw TypeError("Property does not exist in type.")
 
-            this.validate(obj[key], type[key], [...parents, key])
+            this.validate(objValue, type[key], [...parents, key])
         }
     }
 
-    validateType(obj, parents) {
-        if(obj === undefined)
-            throw TypeError("ModelList type is undefined.");
+    validateType(obj, parents = []) {
+        if (obj === undefined)
+            throw TypeError("Object is undefined.")
 
-        if (Object.keys(obj).length === 0 && parents.length === 0)
-            throw TypeError("ModelList type declaration must have at least one property.");
+        if (!Util.isObject(obj) && !Model.modelTypes.some(e => obj === e))
+            throw TypeError("Expected Object or Model Type.")
+
+        if (Object.keys(obj).length === 0 &&
+            !Model.isModelTypeInstance(obj) &&
+            !Model.modelTypes.some(e => obj === e)
+        )
+            throw TypeError("Object contains no keys.")
+
+        if (parents.length === 0 && Model.modelTypes.some(e => obj === e))
+            return
+
+        if (!Util.isObject(obj) &&
+            !Model.isModelTypeInstance(obj) &&
+            !Model.modelTypes.some(e => obj === e))
+            throw TypeError("Property is not a POJO or Model Type.");
 
         for (const [key, value] of Object.entries(obj)) {
-            if (!Util.isObject(value) && !Model.isModelType(value))
-                throw TypeError("Leaf node \"" + key + "\" of type declaration is not a POJO or Model Type.");
-
             this.validateType(value, [...parents, key])
         }
     }
