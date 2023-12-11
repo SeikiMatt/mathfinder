@@ -18,39 +18,23 @@ class Model {
     }
 
     static get modelTypes() {
-        return [
-            ModelString,
-            ModelBoolean,
-            ModelInteger,
-            ModelStat,
-            ModelReference,
-            ModelList
-        ]
+        return [ModelString, ModelBoolean, ModelInteger, ModelStat, ModelReference, ModelList]
     }
 
     static isModelTypeInstance(classInstance) {
-        const ModelTypes = [
-            ModelString,
-            ModelBoolean,
-            ModelInteger,
-            ModelStat,
-            ModelReference,
-            ModelList
-        ]
+        const ModelTypes = [ModelString, ModelBoolean, ModelInteger, ModelStat, ModelReference, ModelList]
 
         return ModelTypes.some(entry => classInstance instanceof entry)
     }
 
     initialise(obj, parents) {
         for (const [key, value] of Object.entries(obj)) {
-            if (!Util.isObject(value))
-                throw TypeError("Leaf node \"" + key + "\" of model is not a POJO or Model Type.");
+            if (!Util.isObject(value)) throw TypeError("Leaf node \"" + key + "\" of model is not a POJO or Model Type.");
 
             if (!Model.isModelTypeInstance(value)) {
                 Object.defineProperty(obj, key, {writable: false})
                 Object.preventExtensions(obj)
             }
-            // console.log(parents.join(".") + "." + key + ": ", value)
 
             Object.defineProperty(obj, key, {
                 writable: false
@@ -79,8 +63,7 @@ class ModelBoolean {
     }
 
     static validate(value) {
-        if (typeof value !== "boolean")
-            throw new Error(`The only valid type for this property is "boolean".`)
+        if (typeof value !== "boolean") throw new Error(`The only valid type for this property is "boolean".`)
     }
 }
 
@@ -103,8 +86,7 @@ class ModelString {
     }
 
     static validate(value) {
-        if (typeof value !== "string")
-            throw TypeError(`The only valid type for this property is "string".`)
+        if (typeof value !== "string") throw TypeError(`The only valid type for this property is "string".`)
     }
 }
 
@@ -128,10 +110,10 @@ class ModelInteger {
 
     static validateInteger(value) {
         if (typeof value !== "number")
-            throw new Error(`The only valid type for this property is "number".`)
+            throw new Error(`The only valid type for this property is number.`)
 
-        if (!Number.isInteger(value))
-            throw new Error(`Number is not an integer.`)
+        if (!Number.isInteger(value) && value !== Infinity)
+            throw new Error(`Number is not an integer or Infinity.`)
     }
 }
 
@@ -227,9 +209,7 @@ class ModelReference {
     }
 
     get(index) {
-        const references = this.#path.map(str =>
-            Util.traverseObjectKeys(this.#parentObject, str.split("."))
-        );
+        const references = this.#path.map(str => Util.traverseObjectKeys(this.#parentObject, str.split(".")));
 
         if (index < 0 || index > references.length - 1)
             throw TypeError("Index is out of range.")
@@ -240,9 +220,7 @@ class ModelReference {
     }
 
     getAll() {
-        return this.#path.map(str =>
-            Util.traverseObjectKeys(this.#parentObject, str.split("."))
-        );
+        return this.#path.map(str => Util.traverseObjectKeys(this.#parentObject, str.split(".")));
     }
 
     get length() {
@@ -286,27 +264,36 @@ class ModelReference {
 
 class ModelList {
     #list = [];
-    #type = {};
-    #options = {};
+    #type;
+    #subtype;
+    #options;
 
     constructor(declaration) {
         this.#list = declaration.list;
-        this.#type = declaration.type;
+        const type = declaration.type
+
+        if (Array.isArray(type) && type.length === 2 && type[0] === ModelList && Util.isObject(type[1])) {
+
+            this.#type = type[0]
+            this.#subtype = type[1].type
+
+            this.validateType(this.#type);
+            this.validateType(this.#subtype);
+        } else {
+            this.#type = type;
+            this.validateType(this.#type);
+        }
+
         this.#options = declaration.options;
-        this.validateType(this.#type);
         this.#list.forEach(obj => this.validate(obj, this.#type));
     }
 
     get(index) {
         if (this.#list.length === 0)
-            throw new Error(
-                `List is empty.`
-            )
+            throw new Error(`List is empty.`)
 
         if (index > this.#list.length - 1 || index < 0)
-            throw new Error(
-                `Supplied index "${index}" is out of range.`
-            )
+            throw new Error(`Supplied index "${index}" is out of range.`)
 
         return this.#list[index]
     }
@@ -316,36 +303,27 @@ class ModelList {
     }
 
     get type() {
-        return structuredClone(this.#type)
+        return this.#type
     }
 
     add(value) {
-        if(this.isReadonly)
-            return
+        if (this.isReadonly) return
 
         this.validate(value, this.#type);
         this.#list = [...this.#list, value];
     }
 
     set(value, index) {
-        if(this.isReadonly)
-            return
+        if (this.isReadonly) return
 
         if (this.#list.length === 0)
-            throw new Error(
-                `List is empty.`
-            )
+            throw new Error(`List is empty.`)
 
         if (index > this.#list.length - 1 || index < 0)
-            throw new Error(
-                `Supplied index "${index}" is out of range.`
-            )
+            throw new Error(`Supplied index "${index}" is out of range.`)
 
         if (!(value instanceof this.#type))
-            throw new Error(
-                `Supplied type "${typeof value}" is not allowed.
-                 Use one of the following: ${this.#type}.`
-            )
+            throw new Error(`Supplied type "${typeof value}" is not allowed.Use one of the following: ${this.#type}.`)
 
         this.#list[index] = value;
     }
@@ -355,18 +333,21 @@ class ModelList {
     }
 
     get isReadonly() {
+        if (!this?.#options?.readonly) return
+
         return 'readonly' in this.#options && this.#options.readonly === true
     }
 
     validate(obj, type, parents = []) {
-        if (obj === undefined)
-            throw TypeError("Object is undefined.")
+        // console.log(obj)
+        if (obj === undefined) throw TypeError("Object is undefined.")
 
-        if (type === undefined)
-            throw TypeError("Type is undefined.")
+        if (type === undefined) throw TypeError("Type is undefined.")
 
-        if (!Util.isObject(obj))
-            throw TypeError("Expected type Object.")
+        if (!Util.isObject(obj)) throw TypeError("Expected type Object.")
+
+        if(this.#subtype)
+            this.typesMatch(this.#subtype, obj.#type)
 
         if (parents.length === 0 && Model.modelTypes.some(e => type === e))
             if (obj instanceof type)
@@ -380,10 +361,7 @@ class ModelList {
         if (Object.keys(obj).length !== Object.keys(type).length)
             throw TypeError("Number of properties don't match between Object and Type.")
 
-        if (!Util.isObject(obj) &&
-            !Model.isModelTypeInstance(obj) &&
-            !Model.modelTypes.some(e => obj === e
-            ))
+        if (!Util.isObject(obj) && !Model.isModelTypeInstance(obj) && !Model.modelTypes.some(e => obj === e))
             throw TypeError("Property is not a POJO or Model Type.");
 
         for (const [key, objValue] of Object.entries(obj)) {
@@ -395,28 +373,48 @@ class ModelList {
     }
 
     validateType(obj, parents = []) {
-        if (obj === undefined)
-            throw TypeError("Object is undefined.")
+        if (obj === undefined) throw TypeError("Object is undefined.")
 
         if (!Util.isObject(obj) && !Model.modelTypes.some(e => obj === e))
             throw TypeError("Expected Object or Model Type.")
 
-        if (Object.keys(obj).length === 0 &&
-            !Model.isModelTypeInstance(obj) &&
-            !Model.modelTypes.some(e => obj === e)
-        )
+        if (Object.keys(obj).length === 0 && !Model.isModelTypeInstance(obj) && !Model.modelTypes.some(e => obj === e))
             throw TypeError("Object contains no keys.")
 
         if (parents.length === 0 && Model.modelTypes.some(e => obj === e))
             return
 
-        if (!Util.isObject(obj) &&
-            !Model.isModelTypeInstance(obj) &&
-            !Model.modelTypes.some(e => obj === e))
+        if (!Util.isObject(obj) && !Model.isModelTypeInstance(obj) && !Model.modelTypes.some(e => obj === e))
             throw TypeError("Property is not a POJO or Model Type.");
 
         for (const [key, value] of Object.entries(obj)) {
             this.validateType(value, [...parents, key])
+        }
+    }
+
+    typesMatch(firstType, secondType, parents=  []) {
+        // it probably goes without saying but types are supposed to be validated before using this.
+
+        const firstIsBareClass = Model.modelTypes.some(e => firstType === e);
+        const secondIsBareClass = Model.modelTypes.some(e => secondType === e);
+
+        if(firstIsBareClass !== secondIsBareClass)
+            throw TypeError("Root types must either both be Class declarations or both be Objects.")
+
+        if(Model.isModelTypeInstance(firstType) || Model.isModelTypeInstance(firstType))
+            throw TypeError("Found Instance where Class declaration was expected.")
+
+        if(firstType !== secondType && !Util.isObject(firstType) && !Util.isObject(secondType))
+            throw TypeError("Type mismatch.")
+
+        if(firstIsBareClass && secondIsBareClass && firstType === secondType)
+            return
+
+        for (const [key, objValue] of Object.entries(firstType)) {
+            if (!Object.hasOwn(secondType, key))
+                throw TypeError("Property does not exist in type.")
+
+            this.typesMatch(firstType[key], secondType[key], [...parents, key])
         }
     }
 }
