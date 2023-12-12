@@ -31,5 +31,5 @@ Promise.all(componentHTML).then(componentPromises => {
     for (let i = 0; i < templates.length; i++)
         replaceElement(elementsToReplace[i], templates[i])
 
-    initializeApp()
+    pagesLoaded.dispatch()
 })
