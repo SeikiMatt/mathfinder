@@ -2,9 +2,48 @@
     <h2 class="text-center">Weapons</h2>
     <div id="--gear:weapon">
         <div id="--gear:weapon--list">
-
+            <div id="--gear:weapon-__INDEX__" class="--gear:weapon flex flex-col gap-2">
+                <div class="flex">
+                    <div class="w-100">
+                        <div class="flex flex-between">
+                            <label class="top">Weapon</label>
+                            <button class="--gear:weapon-__INDEX__-removebutton">X</button>
+                        </div>
+                        <input class="--field" data-field="gear-weapon-__INDEX__-name">
+                    </div>
+                </div>
+                <div class="flex text-secondary gap-1">
+                    <div class="flex-grow flex-shrink">
+                        <label class="top">Attack Bonus</label>
+                        <input class="--field" data-field="gear-weapon-__INDEX__-bonus">
+                    </div>
+                    <div class="flex-grow flex-shrink">
+                        <label class="top">Damage</label>
+                        <input class="--field" data-field="gear-weapon-__INDEX__-damage">
+                    </div>
+                    <div class="w-20">
+                        <label class="top">Critical</label>
+                        <input class="--field" data-field="gear-weapon-__INDEX__-crit">
+                    </div>
+                </div>
+                <div class="flex text-secondary gap-1">
+                    <div class="flex-grow flex-shrink">
+                        <label class="top">Type</label>
+                        <input class="--field" data-field="gear-weapon-__INDEX__-type">
+                    </div>
+                    <div class="flex-grow flex-shrink">
+                        <label class="top">Range</label>
+                        <input class="--field" data-field="gear-weapon-__INDEX__-range">
+                    </div>
+                    <div class="flex-grow flex-shrink">
+                        <label class="top">Ammunition</label>
+                        <input class="--field" data-field="gear-weapon-__INDEX__-ammo">
+                    </div>
+                </div>
+                <hr>
+            </div>
         </div>
-        <button id="--gear:weapon--addbutton" class="button">+</button>
+        <button id="--gear-controls:weapon-addbutton" class="--gear-controls button">+</button>
     </div>
     <hr>
     <h2 class="text-center">AC Items</h2>

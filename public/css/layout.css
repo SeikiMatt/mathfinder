@@ -1,5 +1,5 @@
 .w-fit {
-    width: fit-content;
+    width: fit-content !important;
 }
 
 .w-max {
@@ -61,6 +61,10 @@
 
 .flex-col {
     flex-direction: column;
+}
+
+.flex-colrev {
+    flex-direction: column-reverse;
 }
 
 .flex-center {
@@ -133,4 +137,18 @@
 
 .gap-4 {
     gap: 1rem;
+}
+
+.grid {
+    display: grid;
+}
+
+.grid-misc-cols {
+    grid-template-columns: auto 44px;
+    grid-column-gap: 0.5rem;
+}
+
+.grid-misc-rows {
+    grid-template-rows: auto;
+    grid-row-gap: 0.5rem;
 }

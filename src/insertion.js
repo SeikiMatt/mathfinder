@@ -20,8 +20,16 @@ function replaceElement(before, after) {
 const elementsToReplace = [...document.getElementsByClassName("--component-insertion")];
 const componentHTML = elementsToReplace.map(
     async e => {
-        const pageName = e.id.split(":")[1]
-        return (await fetch(`/src/page/${pageName}.html`)).text()
+        const type = e.id.split(":")[0].replace("--","")
+        const name = e.id.split(":")[1]
+
+        switch(type) {
+            case "modal":
+                return (await fetch(`/src/component/modal/${name}.html`)).text()
+            case "page":
+                return (await fetch(`/src/page/${name}.html`)).text()
+        }
+
     }
 );
 
@@ -31,5 +39,6 @@ Promise.all(componentHTML).then(componentPromises => {
     for (let i = 0; i < templates.length; i++)
         replaceElement(elementsToReplace[i], templates[i])
 
-    pagesLoaded.dispatch()
+    mainInit()
+    statsInit()
 })

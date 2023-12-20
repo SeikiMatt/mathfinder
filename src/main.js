@@ -1,7 +1,5 @@
 "use strict";
 
-const pagesLoaded = new EventEmitter()
-
 function mainInit() {
     const navigation = new Nav(
         Util.$(".--page"),
@@ -10,8 +8,8 @@ function mainInit() {
     )
 
     const modals = new Modals(
-        Util.$(".--modal"),
-        Util.$(".--modal-open"),
+        [...document.getElementsByClassName("--modal")],
+        [...document.getElementsByClassName("--modal-open")],
         ""
     )
 
@@ -24,7 +22,7 @@ function mainInit() {
     function initializeModalEvents() {
         modals.modalOpenButtonElements.forEach(element => {
             element.addEventListener("click", _ => {
-                modals.activateModal(element.id.split(":")[1])
+                modals.activateModal(element.dataset.modalpath)
                 navigation.disableAllPages()
             })
         })

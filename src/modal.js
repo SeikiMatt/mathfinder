@@ -6,7 +6,10 @@ class Modals {
     #activeModal = "";
 
     constructor(modalElements, modalOpenButtonElements, activeModal) {
-        this.#modalMapping = Util.nodeArrayToObject(modalElements)
+        this.#modalMapping = modalElements.reduce((agg, element) => ({
+            ...agg,
+            [element.dataset.modalpath]: element
+        }), {})
         this.#modalOpenButtonElements = modalOpenButtonElements;
         this.#activeModal = activeModal;
     };
@@ -24,7 +27,7 @@ class Modals {
     }
 
     activateModal(id) {
-        if(this.#activeModal) {
+        if (this.#activeModal) {
             this.#modalMapping[this.#activeModal].classList.remove("active")
             this.#modalMapping[this.#activeModal].setAttribute("disabled", "disabled");
         }
