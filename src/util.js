@@ -33,4 +33,67 @@ class Util {
             !Array.isArray(value) &&
             value !== null;
     }
+
+    static debounce(func, milliseconds, immediate) {
+        // https://stackoverflow.com/questions/24004791/what-is-the-debounce-function-in-javascript
+        let timeout;
+
+        return function () { // cannot be arrow function, it loses context
+            const context = this
+            const args = arguments;
+            const callNow = immediate && !timeout;
+
+            clearTimeout(timeout);
+
+            timeout = setTimeout(function () {
+                timeout = null;
+                if (!immediate) {
+                    func.apply(context, args);
+                }
+            }, milliseconds);
+
+            if (callNow) func.apply(context, args);
+        }
+    }
+
+    static setInputFilterSignedInteger(input) {
+        ["input", "keydown", "keyup", "mousedown", "mouseup", "select", "contextmenu", "drop", "focusout"].forEach(function (event) {
+            input.addEventListener(event, function (e) {
+                let value = e.target.value
+                const isEmpty = value.length === 0
+                const isZero = value === "0" || value === "-0" || value === "+0"
+                const isSigned = value[0] === "-" || value[0] === "+"
+
+                // strip zeroes to the left
+                value = value.replaceAll(/^([-+]?)0+([0-9]*$)/gm, "$1$2")
+
+                switch (value) {
+                    case "":
+                    case "-":
+                    case "+":
+                        value = "0"
+                }
+
+                if (!isSigned && !isZero && !isEmpty) {
+                    value = "+" + value
+                }
+
+                switch (e.key) {
+                    case "-":
+                        if (value[0] === "+") value = "-" + value.substring(1)
+                        break
+                    case "+" :
+                        if (value[0] === "-") value = "+" + value.substring(1)
+                }
+
+                e.target.value = value
+
+                if (/^[+-]?\d*$/gm.test(value)) {
+                    e.target.dataset.oldValue = value;
+                } else if (e.target.dataset.oldValue) {
+                    e.target.value = e.target.dataset.oldValue;
+                }
+            });
+        });
+    }
 }
