@@ -3,11 +3,11 @@
     <div class="flex gap-2">
         <div class="flex flex-shrink flex-grow gap-2">
             <div class="health-container flex-shrink">
-                <input class="field-health text-center">
+                <input type="text" class="field-health text-center">
                 <div class="label text-secondary text-center">Current HP</div>
             </div>
             <div class="health-container flex-shrink">
-                <input class="field-health text-center">
+                <input type="text" class="field-health text-center">
                 <div class="label text-secondary text-center">Maximum HP</div>
             </div>
         </div>
@@ -19,7 +19,7 @@
                     <div class="text-secondary text-center">Resistance</div>
                 </td>
                 <td>
-                    <input class="field-number"/>
+                    <input type="text" class="field-number"/>
                 </td>
             </tr>
             <tr>
@@ -28,7 +28,7 @@
                     <div class="text-secondary text-center">Damage</div>
                 </td>
                 <td>
-                    <input class="field-number"/>
+                    <input type="text" class="field-number"/>
                 </td>
             </tr>
         </table>
@@ -40,12 +40,12 @@
                 <div class="text-primary">Speed</div>
                 <div class="text-secondary">Base</div>
             </td>
-            <td><input class="field-number"></td>
+            <td><input type="text" class="field-number"></td>
             <td class="inline-header">
                 <div class="text-primary">Speed</div>
                 <div class="text-secondary">Armored</div>
             </td>
-            <td><input class="field-number"></td>
+            <td><input type="text" class="field-number"></td>
             <td class="inline-header">
                 <div class="text-primary">Initiative</div>
                 <div class="text-secondary">Modifier</div>
@@ -115,13 +115,13 @@
                     <div>Base Attack Bonus</div>
                 </div>
             </td>
-            <td><input class="field-number"></td>
+            <td><input type="text" class="field-number"></td>
             <td class="inline-header">
                 <div class="text-primary flex flex-col flex-center h-100">
                     <div>Spell Resistance</div>
                 </div>
             </td>
-            <td><input class="field-number"></td>
+            <td><input type="text" class="field-number"></td>
         </tr>
     </table>
     <hr>
@@ -169,26 +169,157 @@
         <tbody>
         <tr>
             <td>
+                <div class="text-primary">STR</div>
+                <div class="text-secondary">Strength</div>
+            </td>
+            <td>
+                <input type="text" inputmode="numeric" value="0"
+                       class="--field field-number"
+                       data-field="stats-scores-STR-score">
+            </td>
+            <td>
+                <input type="text" inputmode="numeric" class="--field field-number"
+                       data-field="stats-scores-STR-adjustment"
+                />
+            </td>
+            <td>
+                <input type="text" class="field-number --uncoupled-field"
+                       data-field="stats-scores-STR-modifier"
+                       disabled="disabled"/>
+            </td>
+            <td>
+                <input type="text" class="field-number --uncoupled-field"
+                       data-field="stats-scores-STR-adjustedmodifier"
+                       disabled="disabled"/>
+            </td>
+        </tr>
+        <tr>
+            <td>
                 <div class="text-primary">DEX</div>
                 <div class="text-secondary">Dexterity</div>
             </td>
             <td>
-                <input class="--field field-number"
+                <input type="text" inputmode="numeric" value="0"
+                       class="--field field-number"
                        data-field="stats-scores-DEX-score">
             </td>
             <td>
-                <input class="--field field-number"
+                <input type="text" inputmode="numeric" class="--field field-number"
                        data-field="stats-scores-DEX-adjustment"
                 />
             </td>
             <td>
-                <input class="field-number --uncoupled-field"
+                <input type="text" class="field-number --uncoupled-field"
                        data-field="stats-scores-DEX-modifier"
                        disabled="disabled"/>
             </td>
             <td>
-                <input class="field-number --uncoupled-field"
+                <input type="text" class="field-number --uncoupled-field"
                        data-field="stats-scores-DEX-adjustedmodifier"
+                       disabled="disabled"/>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div class="text-primary">CON</div>
+                <div class="text-secondary">Constitution</div>
+            </td>
+            <td>
+                <input type="text" inputmode="numeric" value="0"
+                       class="--field field-number"
+                       data-field="stats-scores-CON-score">
+            </td>
+            <td>
+                <input type="text" inputmode="numeric" class="--field field-number"
+                       data-field="stats-scores-CON-adjustment"
+                />
+            </td>
+            <td>
+                <input type="text" class="field-number --uncoupled-field"
+                       data-field="stats-scores-CON-modifier"
+                       disabled="disabled"/>
+            </td>
+            <td>
+                <input type="text" class="field-number --uncoupled-field"
+                       data-field="stats-scores-CON-adjustedmodifier"
+                       disabled="disabled"/>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div class="text-primary">INT</div>
+                <div class="text-secondary">Intelligence</div>
+            </td>
+            <td>
+                <input type="text" inputmode="numeric" value="0"
+                       class="--field field-number"
+                       data-field="stats-scores-INT-score">
+            </td>
+            <td>
+                <input type="text" inputmode="numeric" class="--field field-number"
+                       data-field="stats-scores-INT-adjustment"
+                />
+            </td>
+            <td>
+                <input type="text" class="field-number --uncoupled-field"
+                       data-field="stats-scores-INT-modifier"
+                       disabled="disabled"/>
+            </td>
+            <td>
+                <input type="text" class="field-number --uncoupled-field"
+                       data-field="stats-scores-INT-adjustedmodifier"
+                       disabled="disabled"/>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div class="text-primary">WIS</div>
+                <div class="text-secondary">Wisdom</div>
+            </td>
+            <td>
+                <input type="text" inputmode="numeric" value="0"
+                       class="--field field-number"
+                       data-field="stats-scores-WIS-score">
+            </td>
+            <td>
+                <input type="text" inputmode="numeric" class="--field field-number"
+                       data-field="stats-scores-WIS-adjustment"
+                />
+            </td>
+            <td>
+                <input type="text" class="field-number --uncoupled-field"
+                       data-field="stats-scores-WIS-modifier"
+                       disabled="disabled"/>
+            </td>
+            <td>
+                <input type="text" class="field-number --uncoupled-field"
+                       data-field="stats-scores-WIS-adjustedmodifier"
+                       disabled="disabled"/>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div class="text-primary">CHA</div>
+                <div class="text-secondary">Charisma</div>
+            </td>
+            <td>
+                <input type="text" inputmode="numeric" value="0"
+                       class="--field field-number"
+                       data-field="stats-scores-CHA-score">
+            </td>
+            <td>
+                <input type="text" inputmode="numeric" class="--field field-number"
+                       data-field="stats-scores-CHA-adjustment"
+                />
+            </td>
+            <td>
+                <input type="text" class="field-number --uncoupled-field"
+                       data-field="stats-scores-CHA-modifier"
+                       disabled="disabled"/>
+            </td>
+            <td>
+                <input type="text" class="field-number --uncoupled-field"
+                       data-field="stats-scores-CHA-adjustedmodifier"
                        disabled="disabled"/>
             </td>
         </tr>
