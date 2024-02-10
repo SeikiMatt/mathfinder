@@ -45,5 +45,3 @@ function mainInit() {
 
     navigation.switchPage("stats");
 }
-
-pagesLoaded.subscribe(mainInit)

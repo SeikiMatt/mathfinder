@@ -410,7 +410,7 @@ class ModelList {
         if(firstIsBareClass && secondIsBareClass && firstType === secondType)
             return
 
-        for (const [key, objValue] of Object.entries(firstType)) {
+        for (const [key, _] of Object.entries(firstType)) {
             if (!Object.hasOwn(secondType, key))
                 throw TypeError("Property does not exist in type.")
 
