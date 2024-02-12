@@ -40,6 +40,9 @@ function mainInit() {
         }
     }
 
+    const fields = [...document.getElementsByClassName("--field field-number")]
+    fields.forEach(node => Util.setupIntegerField(node))
+
     initializeNavEvents();
     initializeModalEvents();
 
