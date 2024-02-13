@@ -55,97 +55,102 @@ class Util {
 
             if (callNow) func.apply(context, args);
         }
+
     }
 
     // https://stackoverflow.com/questions/469357/html-text-input-allow-only-numeric-input
     static setInputFilter(node, inputFilter, errorMessage) {
         ["input", "keydown", "keyup", "mousedown", "mouseup", "select", "contextmenu", "drop", "focusout"]
             .forEach(eventType => {
-                node.addEventListener(eventType, e => {
-                    if (inputFilter(node.value)) {
-                        // Success
-                        if (["keydown", "mousedown", "focusout"].indexOf(e.type) >= 0) {
-                            node.classList.remove("error");
-                            node.setCustomValidity("");
+                node.addEventListener(eventType, function (e) {
+                        if (inputFilter(node.value)) {
+                            // Success
+                            if (["keydown", "mousedown", "focusout"].indexOf(e.type) >= 0) {
+                                node.classList.remove("error");
+                                node.setCustomValidity("");
+                            }
+
+                            node.dataset.oldValue = node.value;
+
+                            node.dataset.oldSelectionStart = node.selectionStart;
+                            node.dataset.oldSelectionEnd = node.selectionEnd;
+                        } else if (node.dataset.oldValue) {
+                            // Failure
+                            node.value = node.dataset.oldValue;
+
+                            node.setSelectionRange(node.dataset.oldSelectionStart, node.dataset.oldSelectionEnd);
+
+                            node.setCustomValidity(errorMessage);
+                            node.reportValidity();
+
+                            node.classList.add("error");
+                        } else {
+                            // Failure, no rollback
+                            node.value = "";
                         }
-
-                        node.dataset.oldValue = node.value;
-
-                        node.dataset.oldSelectionStart = node.selectionStart;
-                        node.dataset.oldSelectionEnd = node.selectionEnd;
-                    } else if (node.dataset.oldValue) {
-                        // Failure
-                        node.value = node.dataset.oldValue;
-
-                        node.setSelectionRange(node.dataset.oldSelectionStart, node.dataset.oldSelectionEnd);
-
-                        node.setCustomValidity(errorMessage);
-                        node.reportValidity();
-
-                        node.classList.add("error");
-                    } else {
-                        // Failure, no rollback
-                        node.value = "";
                     }
-                });
+                )
+                ;
             });
     }
 
     static setupIntegerField(input, showPositiveSign) {
-        ["input", "keydown", "keyup", "mousedown", "mouseup", "select", "contextmenu", "drop", "focusout"].forEach(function (event) {
-            input.addEventListener(event, function (e) {
-                let value = input.value
-                const minValue = Number(input.dataset.minvalue)
-                const maxValue = Number(input.dataset.maxvalue)
+        ["input", "keydown", "keyup", "mousedown", "mouseup", "select", "contextmenu", "drop", "focusout"]
+            .forEach(eventType => {
+                input.addEventListener(eventType, function (e) {
+                    let value = input.value
+                    const minValue = Number(input.dataset.minvalue)
+                    const maxValue = Number(input.dataset.maxvalue)
 
-                input.classList.remove("error");
-                input.setCustomValidity("");
+                    // Reset validation state and message
+                    input.classList.remove("error");
+                    input.setCustomValidity("");
 
-                if (e.key === "-") {
-                    e.preventDefault()
-                    value = value[0] === "+" ? "-" + value.substring(1) : "-" + value
-                }
-
-                if (e.key === "+") {
-                    e.preventDefault()
-                    if (showPositiveSign) {
-                        value = value[0] === "-" ? "+" + value.substring(1) : "+" + value
-                    } else {
-                        value = value[0] === "-" ? value.substring(1) : value
-                    }
-                }
-
-                switch (value) {
-                    case "-":
-                    case "+":
-                        value = "0"
-                }
-
-                const toNumber = Number(value)
-                if (!isNaN(toNumber)) {
-                    input.dataset.oldValue = value;
-
-                    if (toNumber < minValue || toNumber > maxValue) {
-                        input.classList.add("error");
-                        input.setCustomValidity(`Number must be between ${minValue} and ${maxValue}, inclusive.`);
-                        input.reportValidity();
+                    if (e.key === "-") {
+                        e.preventDefault()
+                        value = value[0] === "+" ? "-" + value.substring(1) : "-" + value
                     }
 
-                    // strip zeroes to the left
-                    value = value.replaceAll(/^([-+]?)0+([0-9]*$)/gm, "$1$2")
+                    if (e.key === "+") {
+                        e.preventDefault()
+                        if (showPositiveSign) {
+                            value = value[0] === "-" ? "+" + value.substring(1) : "+" + value
+                        } else {
+                            value = value[0] === "-" ? value.substring(1) : value
+                        }
+                    }
 
                     switch (value) {
-                        case "":
                         case "-":
                         case "+":
                             value = "0"
                     }
 
-                    input.value = value
-                } else if (e.target.dataset.oldValue) {
-                    input.value = input.dataset.oldValue;
-                }
+                    const toNumber = Number(value)
+                    if (!isNaN(toNumber)) {
+                        input.dataset.oldValue = value;
+
+                        if (toNumber < minValue || toNumber > maxValue) {
+                            input.classList.add("error");
+                            input.setCustomValidity(`Number must be between ${minValue} and ${maxValue}, inclusive.`);
+                            input.reportValidity();
+                        }
+
+                        // strip zeroes to the left
+                        value = value.replaceAll(/^([-+]?)0+([0-9]*$)/gm, "$1$2")
+
+                        switch (value) {
+                            case "":
+                            case "-":
+                            case "+":
+                                value = "0"
+                        }
+
+                        input.value = value
+                    } else if (e.target.dataset.oldValue) {
+                        input.value = input.dataset.oldValue;
+                    }
+                });
             });
-        });
     }
 }
