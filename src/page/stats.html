@@ -3,11 +3,11 @@
     <div class="flex gap-2">
         <div class="flex flex-shrink flex-grow gap-2">
             <div class="health-container flex-shrink">
-                <input type="text" class="--field field-health text-center">
+                <label><input type="text" class="--field field-health text-center"></label>
                 <div class="label text-secondary text-center">Current HP</div>
             </div>
             <div class="health-container flex-shrink">
-                <input type="text" class="--field field-health text-center">
+                <label><input type="text" class="--field field-health text-center"></label>
                 <div class="label text-secondary text-center">Maximum HP</div>
             </div>
         </div>
@@ -19,7 +19,7 @@
                     <div class="text-secondary text-center">Resistance</div>
                 </td>
                 <td>
-                    <input type="text" class="--field field-number"/>
+                    <label><input type="text" class="--field field-number"/></label>
                 </td>
             </tr>
             <tr>
@@ -28,7 +28,7 @@
                     <div class="text-secondary text-center">Damage</div>
                 </td>
                 <td>
-                    <input type="text" class="--field field-number"/>
+                    <label><input type="text" class="--field field-number"/></label>
                 </td>
             </tr>
         </table>
@@ -40,12 +40,12 @@
                 <div class="text-primary">Speed</div>
                 <div class="text-secondary">Base</div>
             </td>
-            <td><input type="text" class="--field field-number"></td>
+            <td><label><input type="text" class="--field field-number"></label></td>
             <td class="inline-header">
                 <div class="text-primary">Speed</div>
                 <div class="text-secondary">Armored</div>
             </td>
-            <td><input type="text" class="--field field-number"></td>
+            <td><label><input type="text" class="--field field-number"></label></td>
             <td class="inline-header">
                 <div class="text-primary">Initiative</div>
                 <div class="text-secondary">Modifier</div>
@@ -115,13 +115,13 @@
                     <div>Base Attack Bonus</div>
                 </div>
             </td>
-            <td><input type="text" class="--field field-number"></td>
+            <td><label><input type="text" class="--field field-number"></label></td>
             <td class="inline-header">
                 <div class="text-primary flex flex-col flex-center h-100">
                     <div>Spell Resistance</div>
                 </div>
             </td>
-            <td><input type="text" class="--field field-number"></td>
+            <td><label><input type="text" class="--field field-number"></label></td>
         </tr>
     </table>
     <hr>
@@ -173,21 +173,26 @@
                 <div class="text-secondary">Strength</div>
             </td>
             <td>
-                <input type="text" inputmode="numeric" value="0" class="--field field-number"
-                       data-field="stats-scores-STR-score">
+                <label>
+                    <input type="text" inputmode="numeric" value="0" class="--field field-number"
+                           data-field="stats-scores-STR-score">
+                </label>
             </td>
             <td>
-                <input type="text" inputmode="numeric" value="0" class="--field field-number"
-                       data-field="stats-scores-STR-adjustment"
-                />
+                <label>
+                    <input type="text" inputmode="numeric" value="0" class="--field field-number"
+                           data-field="stats-scores-STR-adjustment"/>
+                </label>
             </td>
             <td>
-                <input type="text" class="field-number --uncoupled-field"
-                       disabled="disabled"/>
+                <label>
+                    <input type="text" class="field-number --uncoupled-field" disabled="disabled"/>
+                </label>
             </td>
             <td>
-                <input type="text" class="field-number --uncoupled-field"
-                       disabled="disabled"/>
+                <label>
+                    <input type="text" class="field-number --uncoupled-field" disabled="disabled"/>
+                </label>
             </td>
         </tr>
         </tbody>
