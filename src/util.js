@@ -5,6 +5,11 @@ class Util {
         return [...document.querySelectorAll(selector)];
     }
 
+    // https://stackoverflow.com/questions/18749591/encode-html-entities-in-javascript
+    static encodeHTML(html) {
+        return html.replace(/[\u00A0-\u9999<>&]/g, i => '&#' + i.charCodeAt(0) + ';')
+    }
+
     static nodeArrayToObject(nodeArray) {
         return nodeArray.reduce((agg, element) => ({...agg, [element.id.split(":")[1]]: element}), {});
     }
@@ -23,16 +28,11 @@ class Util {
             return entry;
         }
 
-        return Util.traverseObjectKeys(
-            /^\d+$/.test(keys[0]) ? entry.get([Number(keys[0])]) : entry[keys[0]],
-            keys.slice(1)
-        );
+        return Util.traverseObjectKeys(/^\d+$/.test(keys[0]) ? entry.get([Number(keys[0])]) : entry[keys[0]], keys.slice(1));
     }
 
     static isObject(value) {
-        return typeof value === 'object' &&
-            !Array.isArray(value) &&
-            value !== null;
+        return typeof value === 'object' && !Array.isArray(value) && value !== null;
     }
 
     static debounce(func, milliseconds, immediate) {
@@ -63,39 +63,37 @@ class Util {
         ["input", "keydown", "keyup", "mousedown", "mouseup", "select", "contextmenu", "drop", "focusout"]
             .forEach(eventType => {
                 node.addEventListener(eventType, function (e) {
-                        if (inputFilter(node.value)) {
-                            // Success
-                            if (["keydown", "mousedown", "focusout"].indexOf(e.type) >= 0) {
-                                node.classList.remove("error");
-                                node.setCustomValidity("");
-                            }
-
-                            node.dataset.oldValue = node.value;
-
-                            node.dataset.oldSelectionStart = node.selectionStart;
-                            node.dataset.oldSelectionEnd = node.selectionEnd;
-                        } else if (node.dataset.oldValue) {
-                            // Failure
-                            node.value = node.dataset.oldValue;
-
-                            node.setSelectionRange(node.dataset.oldSelectionStart, node.dataset.oldSelectionEnd);
-
-                            node.setCustomValidity(errorMessage);
-                            node.reportValidity();
-
-                            node.classList.add("error");
-                        } else {
-                            // Failure, no rollback
-                            node.value = "";
+                    if (inputFilter(node.value)) {
+                        // Success
+                        if (["keydown", "mousedown", "focusout"].indexOf(e.type) >= 0) {
+                            node.classList.remove("error");
+                            node.setCustomValidity("");
                         }
+
+                        node.dataset.oldValue = node.value;
+
+                        node.dataset.oldSelectionStart = node.selectionStart;
+                        node.dataset.oldSelectionEnd = node.selectionEnd;
+                    } else if (node.dataset.oldValue) {
+                        // Failure
+                        node.value = node.dataset.oldValue;
+
+                        node.setSelectionRange(node.dataset.oldSelectionStart, node.dataset.oldSelectionEnd);
+
+                        node.setCustomValidity(errorMessage);
+                        node.reportValidity();
+
+                        node.classList.add("error");
+                    } else {
+                        // Failure, no rollback
+                        node.value = "";
                     }
-                )
-                ;
+                });
             });
     }
 
     static setupIntegerField(e, input, showPositiveSign) {
-        let value = input.value
+        const toNumber = Number(input.value)
         const minValue = Number(input.dataset.minvalue)
         const maxValue = Number(input.dataset.maxvalue)
 
@@ -103,29 +101,13 @@ class Util {
         input.classList.remove("error");
         input.setCustomValidity("");
 
-        if (e.key === "-") {
-            e.preventDefault()
-            value = value[0] === "+" ? "-" + value.substring(1) : "-" + value
-        }
-
-        if (e.key === "+") {
-            e.preventDefault()
-            if (showPositiveSign) {
-                value = value[0] === "-" ? "+" + value.substring(1) : "+" + value
-            } else {
-                value = value[0] === "-" ? value.substring(1) : value
-            }
-        }
-
-        switch (value) {
-            case "-":
-            case "+":
-                value = "0"
-        }
-
-        const toNumber = Number(value)
-        if (!isNaN(toNumber)) {
-            input.dataset.oldValue = value;
+        if (isNaN(toNumber)) {
+            if (input.value === "" || input.value === "-" || input.value === "+")
+                input.value = 0
+            else
+                input.value = input.dataset.oldValue;
+        } else {
+            input.dataset.oldValue = input.value;
 
             if (toNumber < minValue || toNumber > maxValue) {
                 input.classList.add("error");
@@ -133,25 +115,20 @@ class Util {
                 input.reportValidity();
             }
 
-            // strip zeroes to the left
-            value = value.replaceAll(/^([-+]?)0+([0-9]*$)/gm, "$1$2")
-
-            switch (value) {
-                case "":
-                case "-":
-                case "+":
-                    value = "0"
+            if (e.key === "-") {
+                e.preventDefault()
+                input.value = -Math.abs(toNumber)
+                return
             }
 
-            if(toNumber > 0 && value[0] !== "+" && showPositiveSign) {
-                value = "+" + value
+            if (e.key === "+") {
+                e.preventDefault()
+                input.value = "+" + Math.abs(toNumber)
+                return
             }
 
-            input.value = value
-        } else if (input.dataset.oldValue) {
-            input.value = input.dataset.oldValue;
+            input.value = toNumber > 0 && showPositiveSign ? "+" + toNumber : toNumber
         }
-
     }
 
     static setupIntegerFieldSignPositive(e, input) {
