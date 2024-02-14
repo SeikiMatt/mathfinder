@@ -107,7 +107,11 @@ class Util {
             else
                 input.value = input.dataset.oldValue;
         } else {
-            if (toNumber < minValue || toNumber > maxValue) {
+            if (toNumber < minValue ||
+                toNumber > maxValue ||
+                Number(input.dataset.oldValue) < minValue ||
+                Number(input.dataset.oldValue) > maxValue
+            ) {
                 e.preventDefault()
                 input.value = input.dataset.oldValue;
                 input.classList.add("error");
