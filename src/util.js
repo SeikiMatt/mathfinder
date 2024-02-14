@@ -94,63 +94,80 @@ class Util {
             });
     }
 
-    static setupIntegerField(input, showPositiveSign) {
+    static setupIntegerField(e, input, showPositiveSign) {
+        let value = input.value
+        const minValue = Number(input.dataset.minvalue)
+        const maxValue = Number(input.dataset.maxvalue)
+
+        // Reset validation state and message
+        input.classList.remove("error");
+        input.setCustomValidity("");
+
+        if (e.key === "-") {
+            e.preventDefault()
+            value = value[0] === "+" ? "-" + value.substring(1) : "-" + value
+        }
+
+        if (e.key === "+") {
+            e.preventDefault()
+            if (showPositiveSign) {
+                value = value[0] === "-" ? "+" + value.substring(1) : "+" + value
+            } else {
+                value = value[0] === "-" ? value.substring(1) : value
+            }
+        }
+
+        switch (value) {
+            case "-":
+            case "+":
+                value = "0"
+        }
+
+        const toNumber = Number(value)
+        if (!isNaN(toNumber)) {
+            input.dataset.oldValue = value;
+
+            if (toNumber < minValue || toNumber > maxValue) {
+                input.classList.add("error");
+                input.setCustomValidity(`Number must be between ${minValue} and ${maxValue}, inclusive.`);
+                input.reportValidity();
+            }
+
+            // strip zeroes to the left
+            value = value.replaceAll(/^([-+]?)0+([0-9]*$)/gm, "$1$2")
+
+            switch (value) {
+                case "":
+                case "-":
+                case "+":
+                    value = "0"
+            }
+
+            if(toNumber > 0 && value[0] !== "+" && showPositiveSign) {
+                value = "+" + value
+            }
+
+            input.value = value
+        } else if (input.dataset.oldValue) {
+            input.value = input.dataset.oldValue;
+        }
+
+    }
+
+    static setupIntegerFieldSignPositive(e, input) {
+        Util.setupIntegerField(e, input, true)
+    }
+
+    static registerInputEvents(node, callbacks) {
         ["input", "keydown", "keyup", "mousedown", "mouseup", "select", "contextmenu", "drop", "focusout"]
             .forEach(eventType => {
-                input.addEventListener(eventType, function (e) {
-                    let value = input.value
-                    const minValue = Number(input.dataset.minvalue)
-                    const maxValue = Number(input.dataset.maxvalue)
-
-                    // Reset validation state and message
-                    input.classList.remove("error");
-                    input.setCustomValidity("");
-
-                    if (e.key === "-") {
-                        e.preventDefault()
-                        value = value[0] === "+" ? "-" + value.substring(1) : "-" + value
+                node.addEventListener(eventType, function (e) {
+                    if (Array.isArray(callbacks)) {
+                        callbacks.forEach(func => func(e, node))
+                    } else {
+                        callbacks(e, node)
                     }
-
-                    if (e.key === "+") {
-                        e.preventDefault()
-                        if (showPositiveSign) {
-                            value = value[0] === "-" ? "+" + value.substring(1) : "+" + value
-                        } else {
-                            value = value[0] === "-" ? value.substring(1) : value
-                        }
-                    }
-
-                    switch (value) {
-                        case "-":
-                        case "+":
-                            value = "0"
-                    }
-
-                    const toNumber = Number(value)
-                    if (!isNaN(toNumber)) {
-                        input.dataset.oldValue = value;
-
-                        if (toNumber < minValue || toNumber > maxValue) {
-                            input.classList.add("error");
-                            input.setCustomValidity(`Number must be between ${minValue} and ${maxValue}, inclusive.`);
-                            input.reportValidity();
-                        }
-
-                        // strip zeroes to the left
-                        value = value.replaceAll(/^([-+]?)0+([0-9]*$)/gm, "$1$2")
-
-                        switch (value) {
-                            case "":
-                            case "-":
-                            case "+":
-                                value = "0"
-                        }
-
-                        input.value = value
-                    } else if (e.target.dataset.oldValue) {
-                        input.value = input.dataset.oldValue;
-                    }
-                });
-            });
+                })
+            })
     }
 }

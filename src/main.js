@@ -41,7 +41,7 @@ function mainInit() {
     }
 
     const fields = [...document.getElementsByClassName("--field field-number")]
-    fields.forEach(node => Util.setupIntegerField(node))
+    fields.forEach(node => Util.registerInputEvents(node, [Util.setupIntegerField]))
 
     initializeNavEvents();
     initializeModalEvents();
