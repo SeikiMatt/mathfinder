@@ -107,13 +107,16 @@ class Util {
             else
                 input.value = input.dataset.oldValue;
         } else {
-            input.dataset.oldValue = input.value;
-
             if (toNumber < minValue || toNumber > maxValue) {
+                e.preventDefault()
+                input.value = input.dataset.oldValue;
                 input.classList.add("error");
                 input.setCustomValidity(`Number must be between ${minValue} and ${maxValue}, inclusive.`);
                 input.reportValidity();
+                return
             }
+
+            input.dataset.oldValue = input.value;
 
             if (e.key === "-") {
                 e.preventDefault()
@@ -121,7 +124,7 @@ class Util {
                 return
             }
 
-            if (e.key === "+") {
+            if (e.key === "+" && toNumber !== 0) {
                 e.preventDefault()
                 input.value = "+" + Math.abs(toNumber)
                 return
