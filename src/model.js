@@ -18,11 +18,11 @@ class Model {
     }
 
     static get modelTypes() {
-        return [ModelString, ModelBoolean, ModelInteger, ModelStat, ModelReference, ModelList]
+        return [ModelString, ModelBoolean, ModelInteger, ModelModifier, ModelReference, ModelList]
     }
 
     static isModelTypeInstance(classInstance) {
-        const ModelTypes = [ModelString, ModelBoolean, ModelInteger, ModelStat, ModelReference, ModelList]
+        const ModelTypes = [ModelString, ModelBoolean, ModelInteger, ModelModifier, ModelReference, ModelList]
 
         return ModelTypes.some(entry => classInstance instanceof entry)
     }
@@ -45,6 +45,35 @@ class Model {
     }
 }
 
+// noinspection JSUnusedGlobalSymbols
+class IModel {
+    //////////////////////////////////////////////////////////////////////
+    // This is a pretend interface to look at for reference, nothing else.
+    #value = undefined
+
+    constructor(value) {
+        IModel.validate(value)
+        this.#value = value;
+    }
+
+    get value() {
+        return this.#value
+    }
+
+    set value(newValue) {
+        IModel.validate(newValue)
+        this.#value = newValue
+    }
+
+    toString() {
+        // serialize ya thing here
+    }
+
+    static validate(value) {
+        if (typeof value !== "undefined") throw new Error(`Expected type "undefined".`)
+    }
+}
+
 class ModelBoolean {
     #value = false;
 
@@ -63,7 +92,7 @@ class ModelBoolean {
     }
 
     static validate(value) {
-        if (typeof value !== "boolean") throw new Error(`The only valid type for this property is "boolean".`)
+        if (typeof value !== "boolean") throw new Error(`Expected type "boolean".`)
     }
 }
 
@@ -86,115 +115,86 @@ class ModelString {
     }
 
     static validate(value) {
-        if (typeof value !== "string") throw TypeError(`The only valid type for this property is "string".`)
+        if (typeof value !== "string") throw TypeError(`Expected type "string".`)
     }
 }
 
 class ModelInteger {
-    #integer = 0;
+    #value = 0;
 
     constructor(value) {
         value = value ?? 0;
         ModelInteger.validateInteger(value)
-        this.#integer = value
+        this.#value = value
     }
 
     get value() {
-        return this.#integer
+        return this.#value
     }
 
     set value(value) {
         ModelInteger.validateInteger(value)
-        this.#integer = value
+        this.#value = value
+    }
+
+    static integerToModifier(integer) {
+        ModelInteger.validateInteger(integer)
+
+        return integer === 0 ? "0" : integer > 0 ? "+" + integer : "" + integer
+    }
+
+    static scoreToModifier(score) {
+        ModelInteger.validateInteger(score)
+
+        const modifier = Math.floor((score - 10) / 2)
+        return ModelInteger.integerToModifier(modifier);
     }
 
     static validateInteger(value) {
         if (typeof value !== "number")
-            throw new Error(`The only valid type for this property is number.`)
+            throw new Error(`Expected type "number".`)
 
         if (!Number.isInteger(value) && value !== Infinity)
             throw new Error(`Number is not an integer or Infinity.`)
     }
 }
 
-class ModelStat {
-    #score = 0;
-    #modifier = "+0"
-
+class ModelModifier {
+    #value = "0"
     constructor(value) {
-        switch (typeof value) {
-            case "string":
-                ModelStat.validateModifier(value)
-                this.#modifier = value;
-                this.#score = ModelStat.modifierToScore(value)
-                break
-            case "number":
-                ModelStat.validateInteger(value)
-                this.#score = value
-                this.#modifier = ModelStat.scoreToModifier(value)
-        }
+        value = value ?? "0"
+        ModelModifier.validateModifier(value)
+        this.#value = value;
     }
 
-    get score() {
-        return this.#score
+    get value() {
+        return this.#value
     }
 
-    set score(value) {
-        ModelStat.validateInteger(value)
-        this.#score = value
-        this.#modifier = ModelStat.scoreToModifier(value)
-    }
-
-    get modifier() {
-        return this.#modifier
-    }
-
-    set modifier(value) {
-        ModelStat.validateModifier(value)
-        this.#modifier = value;
-        this.#score = ModelStat.modifierToScore(value)
-    }
-
-    static integerToModifier(integer) {
-        ModelStat.validateInteger(integer)
-
-        return integer === 0 ? "0" : integer > 0 ? "+" + integer : "" + integer
-    }
-
-    static scoreToModifier(score) {
-        ModelStat.validateInteger(score)
-
-        const modifier = Math.floor((score - 10) / 2)
-        return ModelStat.integerToModifier(modifier);
+    set value(value) {
+        ModelModifier.validateModifier(value)
+        this.#value = value;
     }
 
     static modifierToScore(modifier) {
-        ModelStat.validateModifier(modifier)
+        ModelModifier.validateModifier(modifier)
 
-        return ModelStat.modifierToNumber(modifier) * 2 + 10;
+        return ModelModifier.modifierToNumber(modifier) * 2 + 10;
     }
 
     static modifierToNumber(modifier) {
-        ModelStat.validateModifier(modifier)
+        ModelModifier.validateModifier(modifier)
 
         const number = Number(modifier.slice(1));
-        return modifier[0] === "+" ? Math.abs(number) : -Math.abs(number)
-    }
-
-    static validateInteger(value) {
-        if (typeof value !== "number")
-            throw new Error(`The only valid type for this property is "number".`)
-
-        if (!Number.isInteger(value))
-            throw new Error(`Number is not an integer.`)
+        return modifier === "0" ? 0 : modifier[0] === "+" ? Math.abs(number) : -Math.abs(number)
     }
 
     static validateModifier(value) {
         if (typeof value !== "string")
-            throw new Error(`The only valid type for this property is "string".`)
+            throw new Error(`Expected type "string".`)
 
-        if (!value.match(/^([+-])\d+(?!.+)/))
-            throw new Error(`Value should be in sign-integer format, e.g. "+5" or "-2".`)
+        if (!value.match(/^([+-])\d+(?!.+)/) && value !== "0")
+            throw new Error(`Value should have a sign if not zero, positive or negative both, e.g. "+5" or "-2".`)
     }
 }
 
@@ -346,7 +346,7 @@ class ModelList {
 
         if (!Util.isObject(obj)) throw TypeError("Expected type Object.")
 
-        if(this.#subtype)
+        if (this.#subtype)
             this.typesMatch(this.#subtype, obj.#type)
 
         if (parents.length === 0 && Model.modelTypes.some(e => type === e))
@@ -392,22 +392,22 @@ class ModelList {
         }
     }
 
-    typesMatch(firstType, secondType, parents=  []) {
+    typesMatch(firstType, secondType, parents = []) {
         // it probably goes without saying but types are supposed to be validated before using this.
 
         const firstIsBareClass = Model.modelTypes.some(e => firstType === e);
         const secondIsBareClass = Model.modelTypes.some(e => secondType === e);
 
-        if(firstIsBareClass !== secondIsBareClass)
+        if (firstIsBareClass !== secondIsBareClass)
             throw TypeError("Root types must either both be Class declarations or both be Objects.")
 
-        if(Model.isModelTypeInstance(firstType) || Model.isModelTypeInstance(firstType))
+        if (Model.isModelTypeInstance(firstType) || Model.isModelTypeInstance(firstType))
             throw TypeError("Found Instance where Class declaration was expected.")
 
-        if(firstType !== secondType && !Util.isObject(firstType) && !Util.isObject(secondType))
+        if (firstType !== secondType && !Util.isObject(firstType) && !Util.isObject(secondType))
             throw TypeError("Type mismatch.")
 
-        if(firstIsBareClass && secondIsBareClass && firstType === secondType)
+        if (firstIsBareClass && secondIsBareClass && firstType === secondType)
             return
 
         for (const [key, _] of Object.entries(firstType)) {

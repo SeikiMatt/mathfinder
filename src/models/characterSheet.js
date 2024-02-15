@@ -14,7 +14,7 @@ const modelCharacterSheet = new Model({
         age: new ModelString(),
         size: {
             name: new ModelString(),
-            modifier: new ModelStat()
+            modifier: new ModelModifier()
         },
         player: new ModelString(),
         campaign: new ModelString(),
@@ -43,13 +43,13 @@ const modelCharacterSheet = new Model({
                 gear: new ModelReference("gear.acitem"),
                 DEX: new ModelReference("stats.scores.DEX"),
                 size: new ModelReference("bio.size.modifier"),
-                natural: new ModelInteger(),
-                deflection: new ModelStat(),
+                natural: new ModelModifier(),
+                deflection: new ModelModifier(),
                 misc: new ModelList({
                     list: [],
                     type: {
                         name: ModelString,
-                        modifier: ModelStat
+                        modifier: ModelModifier
                     }
                 })
             },
@@ -57,12 +57,12 @@ const modelCharacterSheet = new Model({
                 base: new ModelInteger(10),
                 DEX: new ModelReference("stats.scores.DEX"),
                 size: new ModelReference("bio.size.modifier"),
-                deflection: new ModelStat(),
+                deflection: new ModelModifier(),
                 misc: new ModelList({
                     list: [],
                     type: {
                         name: ModelString,
-                        modifier: ModelStat
+                        modifier: ModelModifier
                     }
                 })
             },
@@ -70,77 +70,77 @@ const modelCharacterSheet = new Model({
                 base: new ModelInteger(10),
                 gear: new ModelReference("gear.acitem"),
                 size: new ModelReference("bio.size.modifier"),
-                natural: new ModelInteger(),
-                deflection: new ModelStat(),
+                natural: new ModelModifier(),
+                deflection: new ModelModifier(),
                 misc: new ModelList({
                     list: [],
                     type: {
                         name: ModelString,
-                        modifier: ModelStat
+                        modifier: ModelModifier
                     }
                 })
             }
         },
         throws: {
             fortitude: {
-                base: new ModelStat(),
+                base: new ModelInteger(),
                 abilitymod: new ModelReference("stats.abilities.CON"),
-                magicmod: new ModelStat(),
+                magicmod: new ModelModifier(),
                 misc: new ModelList({
                     list: [],
                     type: {
                         name: ModelString,
-                        modifier: ModelStat
+                        modifier: ModelModifier
                     }
                 }),
                 temp: new ModelList({
                     list: [],
                     type: {
                         name: ModelString,
-                        modifier: ModelStat
+                        modifier: ModelModifier
                     }
                 })
             },
             reflex: {
-                base: new ModelStat(),
+                base: new ModelInteger(),
                 abilitymod: new ModelReference("stats.abilities.DEX"),
-                magicmod: new ModelStat(),
+                magicmod: new ModelModifier(),
                 misc: new ModelList({
                     list: [],
                     type: {
                         name: ModelString,
-                        modifier: ModelStat
+                        modifier: ModelModifier
                     }
                 }),
                 temp: new ModelList({
                     list: [],
                     type: {
                         name: ModelString,
-                        modifier: ModelStat
+                        modifier: ModelModifier
                     }
                 })
             },
             will: {
-                base: new ModelStat(),
+                base: new ModelInteger(),
                 abilitymod: new ModelReference("stats.abilities.WIS"),
-                magicmod: new ModelStat(),
+                magicmod: new ModelModifier(),
                 misc: new ModelList({
                     list: [],
                     type: {
                         name: ModelString,
-                        modifier: ModelStat
+                        modifier: ModelModifier
                     }
                 }),
                 temp: new ModelList({
                     list: [],
                     type: {
                         name: ModelString,
-                        modifier: ModelStat
+                        modifier: ModelModifier
                     }
                 })
             }
         },
-        BAB: new ModelStat(),
+        BAB: new ModelModifier(),
         spellresistance: new ModelInteger(),
         combatmaneuver: {
             bonus: {
@@ -151,12 +151,12 @@ const modelCharacterSheet = new Model({
                     list: [],
                     type: {
                         name: ModelString,
-                        modifier: ModelStat
+                        modifier: ModelModifier
                     }
                 })
             },
             defence: {
-                base: new ModelStat(10),
+                base: new ModelInteger(10),
                 BAB: new ModelReference("stats.bab"),
                 STR: new ModelReference("stats.scores.STR"),
                 DEX: new ModelReference("stats.scores.DEX"),
@@ -165,7 +165,7 @@ const modelCharacterSheet = new Model({
                     list: [],
                     type: {
                         name: ModelString,
-                        modifier: ModelStat
+                        modifier: ModelModifier
                     }
                 })
             }
@@ -382,11 +382,11 @@ const modelCharacterSheet = new Model({
                     misc: new ModelList({
                         list: [{
                             name: new ModelString(),
-                            modifier: new ModelStat()
+                            modifier: new ModelModifier()
                         }],
                         type: {
                             name: ModelString,
-                            modifier: ModelStat
+                            modifier: ModelModifier
                         }
                     })
                 },
@@ -403,7 +403,7 @@ const modelCharacterSheet = new Model({
                         list: [],
                         type: {
                             name: ModelString,
-                            modifier: ModelStat
+                            modifier: ModelModifier
                         }
                     })
                 },
@@ -420,7 +420,7 @@ const modelCharacterSheet = new Model({
                         list: [],
                         type: {
                             name: ModelString,
-                            modifier: ModelStat
+                            modifier: ModelModifier
                         }
                     })
                 },
@@ -437,7 +437,7 @@ const modelCharacterSheet = new Model({
                         list: [],
                         type: {
                             name: ModelString,
-                            modifier: ModelStat
+                            modifier: ModelModifier
                         }
                     })
                 },
@@ -454,7 +454,7 @@ const modelCharacterSheet = new Model({
                         list: [],
                         type: {
                             name: ModelString,
-                            modifier: ModelStat
+                            modifier: ModelModifier
                         }
                     })
                 },
@@ -471,7 +471,7 @@ const modelCharacterSheet = new Model({
                         list: [],
                         type: {
                             name: ModelString,
-                            modifier: ModelStat
+                            modifier: ModelModifier
                         }
                     })
                 },
@@ -488,7 +488,7 @@ const modelCharacterSheet = new Model({
                         list: [],
                         type: {
                             name: ModelString,
-                            modifier: ModelStat
+                            modifier: ModelModifier
                         }
                     })
                 },
@@ -505,7 +505,7 @@ const modelCharacterSheet = new Model({
                         list: [],
                         type: {
                             name: ModelString,
-                            modifier: ModelStat
+                            modifier: ModelModifier
                         }
                     })
                 },
@@ -522,7 +522,7 @@ const modelCharacterSheet = new Model({
                         list: [],
                         type: {
                             name: ModelString,
-                            modifier: ModelStat
+                            modifier: ModelModifier
                         }
                     })
                 },
@@ -539,7 +539,7 @@ const modelCharacterSheet = new Model({
                         list: [],
                         type: {
                             name: ModelString,
-                            modifier: ModelStat
+                            modifier: ModelModifier
                         }
                     })
                 },
@@ -556,7 +556,7 @@ const modelCharacterSheet = new Model({
                         list: [],
                         type: {
                             name: ModelString,
-                            modifier: ModelStat
+                            modifier: ModelModifier
                         }
                     })
                 },
@@ -573,7 +573,7 @@ const modelCharacterSheet = new Model({
                         list: [],
                         type: {
                             name: ModelString,
-                            modifier: ModelStat
+                            modifier: ModelModifier
                         }
                     })
                 },
@@ -590,7 +590,7 @@ const modelCharacterSheet = new Model({
                         list: [],
                         type: {
                             name: ModelString,
-                            modifier: ModelStat
+                            modifier: ModelModifier
                         }
                     })
                 },
@@ -607,7 +607,7 @@ const modelCharacterSheet = new Model({
                         list: [],
                         type: {
                             name: ModelString,
-                            modifier: ModelStat
+                            modifier: ModelModifier
                         }
                     })
                 },
@@ -624,7 +624,7 @@ const modelCharacterSheet = new Model({
                         list: [],
                         type: {
                             name: ModelString,
-                            modifier: ModelStat
+                            modifier: ModelModifier
                         }
                     })
                 },
@@ -641,7 +641,7 @@ const modelCharacterSheet = new Model({
                         list: [],
                         type: {
                             name: ModelString,
-                            modifier: ModelStat
+                            modifier: ModelModifier
                         }
                     })
                 },
@@ -658,7 +658,7 @@ const modelCharacterSheet = new Model({
                         list: [],
                         type: {
                             name: ModelString,
-                            modifier: ModelStat
+                            modifier: ModelModifier
                         }
                     })
                 },
@@ -675,7 +675,7 @@ const modelCharacterSheet = new Model({
                         list: [],
                         type: {
                             name: ModelString,
-                            modifier: ModelStat
+                            modifier: ModelModifier
                         }
                     })
                 },
@@ -692,7 +692,7 @@ const modelCharacterSheet = new Model({
                         list: [],
                         type: {
                             name: ModelString,
-                            modifier: ModelStat
+                            modifier: ModelModifier
                         }
                     })
                 },
@@ -709,7 +709,7 @@ const modelCharacterSheet = new Model({
                         list: [],
                         type: {
                             name: ModelString,
-                            modifier: ModelStat
+                            modifier: ModelModifier
                         }
                     })
                 },
@@ -726,7 +726,7 @@ const modelCharacterSheet = new Model({
                         list: [],
                         type: {
                             name: ModelString,
-                            modifier: ModelStat
+                            modifier: ModelModifier
                         }
                     })
                 },
@@ -743,7 +743,7 @@ const modelCharacterSheet = new Model({
                         list: [],
                         type: {
                             name: ModelString,
-                            modifier: ModelStat
+                            modifier: ModelModifier
                         }
                     })
                 },
@@ -760,7 +760,7 @@ const modelCharacterSheet = new Model({
                         list: [],
                         type: {
                             name: ModelString,
-                            modifier: ModelStat
+                            modifier: ModelModifier
                         }
                     })
                 },
@@ -777,7 +777,7 @@ const modelCharacterSheet = new Model({
                         list: [],
                         type: {
                             name: ModelString,
-                            modifier: ModelStat
+                            modifier: ModelModifier
                         }
                     })
                 },
@@ -794,7 +794,7 @@ const modelCharacterSheet = new Model({
                         list: [],
                         type: {
                             name: ModelString,
-                            modifier: ModelStat
+                            modifier: ModelModifier
                         }
                     })
                 },
@@ -811,7 +811,7 @@ const modelCharacterSheet = new Model({
                         list: [],
                         type: {
                             name: ModelString,
-                            modifier: ModelStat
+                            modifier: ModelModifier
                         }
                     })
                 },
@@ -828,7 +828,7 @@ const modelCharacterSheet = new Model({
                         list: [],
                         type: {
                             name: ModelString,
-                            modifier: ModelStat
+                            modifier: ModelModifier
                         }
                     })
                 },
@@ -845,7 +845,7 @@ const modelCharacterSheet = new Model({
                         list: [],
                         type: {
                             name: ModelString,
-                            modifier: ModelStat
+                            modifier: ModelModifier
                         }
                     })
                 },
@@ -862,7 +862,7 @@ const modelCharacterSheet = new Model({
                         list: [],
                         type: {
                             name: ModelString,
-                            modifier: ModelStat
+                            modifier: ModelModifier
                         }
                     })
                 },
@@ -879,7 +879,7 @@ const modelCharacterSheet = new Model({
                         list: [],
                         type: {
                             name: ModelString,
-                            modifier: ModelStat
+                            modifier: ModelModifier
                         }
                     })
                 },
@@ -896,7 +896,7 @@ const modelCharacterSheet = new Model({
                         list: [],
                         type: {
                             name: ModelString,
-                            modifier: ModelStat
+                            modifier: ModelModifier
                         }
                     })
                 },
@@ -913,7 +913,7 @@ const modelCharacterSheet = new Model({
                         list: [],
                         type: {
                             name: ModelString,
-                            modifier: ModelStat
+                            modifier: ModelModifier
                         }
                     })
                 },
@@ -930,7 +930,7 @@ const modelCharacterSheet = new Model({
                         list: [],
                         type: {
                             name: ModelString,
-                            modifier: ModelStat
+                            modifier: ModelModifier
                         }
                     })
                 },
@@ -947,7 +947,7 @@ const modelCharacterSheet = new Model({
                         list: [],
                         type: {
                             name: ModelString,
-                            modifier: ModelStat
+                            modifier: ModelModifier
                         }
                     })
                 },
@@ -964,7 +964,7 @@ const modelCharacterSheet = new Model({
                         list: [],
                         type: {
                             name: ModelString,
-                            modifier: ModelStat
+                            modifier: ModelModifier
                         }
                     })
                 },
@@ -981,7 +981,7 @@ const modelCharacterSheet = new Model({
                         list: [],
                         type: {
                             name: ModelString,
-                            modifier: ModelStat
+                            modifier: ModelModifier
                         }
                     })
                 },
@@ -998,7 +998,7 @@ const modelCharacterSheet = new Model({
                         list: [],
                         type: {
                             name: ModelString,
-                            modifier: ModelStat
+                            modifier: ModelModifier
                         }
                     })
                 },
@@ -1015,7 +1015,7 @@ const modelCharacterSheet = new Model({
                         list: [],
                         type: {
                             name: ModelString,
-                            modifier: ModelStat
+                            modifier: ModelModifier
                         }
                     })
                 },
@@ -1032,7 +1032,7 @@ const modelCharacterSheet = new Model({
                         list: [],
                         type: {
                             name: ModelString,
-                            modifier: ModelStat
+                            modifier: ModelModifier
                         }
                     })
                 },
@@ -1068,4 +1068,3 @@ const modelCharacterSheet = new Model({
         })
     }
 })
-
