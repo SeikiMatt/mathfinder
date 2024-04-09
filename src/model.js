@@ -6,11 +6,11 @@ class Model {
     constructor(modelDeclaration) {
         this.#modelDeclaration = modelDeclaration;
         this.initialise(this.#modelDeclaration, []);
-        Object.preventExtensions(this.#modelDeclaration)
+        Object.preventExtensions(this.#modelDeclaration);
     }
 
     get #data() {
-        return this.#modelDeclaration
+        return this.#modelDeclaration;
     }
 
     get data() {
@@ -46,31 +46,32 @@ class Model {
 }
 
 // noinspection JSUnusedGlobalSymbols
-class IModel {
+class IModelType {
     //////////////////////////////////////////////////////////////////////
     // This is a pretend interface to look at for reference, nothing else.
-    #value = undefined
+    #value = undefined;
 
     constructor(value) {
-        IModel.validate(value)
+        IModelType.validate(value);
         this.#value = value;
     }
 
     get value() {
-        return this.#value
+        return this.#value;
     }
 
     set value(newValue) {
-        IModel.validate(newValue)
-        this.#value = newValue
-    }
-
-    toString() {
-        // serialize ya thing here
+        IModelType.validate(newValue);
+        this.#value = newValue;
     }
 
     static validate(value) {
         if (typeof value !== "undefined") throw new Error(`Expected type "undefined".`)
+        if (typeof value !== "undefined") throw new Error(`Expected type "undefined".`);
+    }
+
+    extract() {
+        // turn everything into POJOs
     }
 }
 
@@ -78,21 +79,25 @@ class ModelBoolean {
     #value = false;
 
     constructor(value) {
-        ModelBoolean.validate(value)
+        ModelBoolean.validate(value);
         this.#value = value;
     }
 
     get value() {
-        return this.#value
+        return this.#value;
     }
 
     set value(newValue) {
-        ModelBoolean.validate(newValue)
-        this.#value = newValue
+        ModelBoolean.validate(newValue);
+        this.#value = newValue;
     }
 
     static validate(value) {
-        if (typeof value !== "boolean") throw new Error(`Expected type "boolean".`)
+        if (typeof value !== "boolean") throw new Error(`Expected type "boolean".`);
+    }
+
+    extract() {
+        return this.value;
     }
 }
 
@@ -100,22 +105,26 @@ class ModelString {
     #value = "";
 
     constructor(value) {
-        value = value ?? ""
-        ModelString.validate(value)
+        value = value ?? "";
+        ModelString.validate(value);
         this.#value = value;
     }
 
     get value() {
-        return this.#value
+        return this.#value;
     }
 
     set value(newValue) {
-        ModelString.validate(newValue)
-        this.#value = newValue
+        ModelString.validate(newValue);
+        this.#value = newValue;
     }
 
     static validate(value) {
-        if (typeof value !== "string") throw TypeError(`Expected type "string".`)
+        if (typeof value !== "string") throw TypeError(`Expected type "string".`);
+    }
+
+    extract() {
+        return this.value;
     }
 }
 
@@ -124,77 +133,86 @@ class ModelInteger {
 
     constructor(value) {
         value = value ?? 0;
-        ModelInteger.validateInteger(value)
-        this.#value = value
+        ModelInteger.validateInteger(value);
+        this.#value = value;
     }
 
     get value() {
-        return this.#value
+        return this.#value;
     }
 
     set value(value) {
-        ModelInteger.validateInteger(value)
-        this.#value = value
+        ModelInteger.validateInteger(value);
+        this.#value = value;
     }
 
     static integerToModifier(integer) {
-        ModelInteger.validateInteger(integer)
+        ModelInteger.validateInteger(integer);
 
-        return integer === 0 ? "0" : integer > 0 ? "+" + integer : "" + integer
+        return integer === 0 ? "0" : integer > 0 ? "+" + integer : "" + integer;
     }
 
     static scoreToModifier(score) {
-        ModelInteger.validateInteger(score)
+        ModelInteger.validateInteger(score);
 
-        const modifier = Math.floor((score - 10) / 2)
+        const modifier = Math.floor((score - 10) / 2);
         return ModelInteger.integerToModifier(modifier);
     }
 
     static validateInteger(value) {
         if (typeof value !== "number")
-            throw new Error(`Expected type "number".`)
+            throw new Error(`Expected type "number".`);
 
         if (!Number.isInteger(value) && value !== Infinity)
-            throw new Error(`Number is not an integer or Infinity.`)
+            throw new Error(`Number is not an integer or Infinity.`);
+    }
+
+    extract() {
+        return this.value;
     }
 }
 
 class ModelModifier {
-    #value = "0"
+    #value = "0";
+
     constructor(value) {
-        value = value ?? "0"
-        ModelModifier.validateModifier(value)
+        value = value ?? "0";
+        ModelModifier.validateModifier(value);
         this.#value = value;
     }
 
     get value() {
-        return this.#value
+        return this.#value;
     }
 
     set value(value) {
-        ModelModifier.validateModifier(value)
+        ModelModifier.validateModifier(value);
         this.#value = value;
     }
 
     static modifierToScore(modifier) {
-        ModelModifier.validateModifier(modifier)
+        ModelModifier.validateModifier(modifier);
 
         return ModelModifier.modifierToNumber(modifier) * 2 + 10;
     }
 
     static modifierToNumber(modifier) {
-        ModelModifier.validateModifier(modifier)
+        ModelModifier.validateModifier(modifier);
 
         const number = Number(modifier.slice(1));
-        return modifier === "0" ? 0 : modifier[0] === "+" ? Math.abs(number) : -Math.abs(number)
+        return modifier === "0" ? 0 : modifier[0] === "+" ? Math.abs(number) : -Math.abs(number);
     }
 
     static validateModifier(value) {
         if (typeof value !== "string")
-            throw new Error(`Expected type "string".`)
+            throw new Error(`Expected type "string".`);
 
         if (!value.match(/^([+-])\d+(?!.+)/) && value !== "0")
-            throw new Error(`Value should have a sign if not zero, positive or negative both, e.g. "+5" or "-2".`)
+            throw new Error(`Value should have a sign if not zero, positive or negative both, e.g. "+5" or "-2".`);
+    }
+
+    extract() {
+        return this.value;
     }
 }
 
@@ -259,6 +277,10 @@ class ModelReference {
             if (!entry.match(pattern))
                 throw TypeError(`Path does not match "property.dot.notation" format.`);
         }
+    }
+
+    extract() {
+        return "__REFERENCE__";
     }
 }
 
