@@ -66,7 +66,6 @@ class IModelType {
     }
 
     static validate(value) {
-        if (typeof value !== "undefined") throw new Error(`Expected type "undefined".`)
         if (typeof value !== "undefined") throw new Error(`Expected type "undefined".`);
     }
 
